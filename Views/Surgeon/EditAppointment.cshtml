@@ -1,0 +1,373 @@
+﻿
+@{
+    ViewData["Title"] = "Edit Booking";
+}
+@inject IHttpContextAccessor contextAccessor
+
+<div class="col-12 grid-margin">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title text-center">Surgery Booking</h4>
+            <form class="form-sample">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group row" style="display:flex;flex-direction:column;align-items:center">
+                            <h5 class="col-sm-3 col-form-label">Patient ID Number</h5>
+                            <span class="col-sm-3 form-label text-danger" style="display:none" id="id-error">Invalid ID Number</span>
+                            <div class="col-sm-4">
+                                <input id="patientID" autocomplete="off" maxlength="13" minlength="13" type="text" class="form-control text-center">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" id="" style="justify-content:space-around">
+                    <div class="card col-md-6">
+                        <div class="card-body">
+                            <h4 class="card-title">Patient Info</h4>
+                            <div class="row">
+                                <div class="col-md-9">
+                                    <div id="patient-info">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <br />
+                <br />
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="form-label">Anaesthesiologist </label>
+                        <div class="form-group row">
+                            <div class="col-sm-9">
+                                @Html.DropDownList("AnaeId1", (SelectList)ViewBag.Anae, new { @class = "form-select", @id = "AnaeId" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 row">
+                        <div class="col-md-6">
+                            <label class="form-label">Date</label>
+                            <div class="form-group row">
+                                <div class="col-sm-9">
+                                    <input type="date" id="date" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Session</label>
+                            <div class="form-check" style="margin-left: 6%;">
+                                <input class="form-check-input" value="Morning" type="radio" name="time" id="flexRadioDefault1" checked>
+                                <label class="form-check-label" for="flexRadioDefault1">
+                                    Morning
+                                </label>
+                            </div>
+                            <div class="form-check" style="margin-left: 6%;">
+                                <input class="form-check-input" value="Afternoon" type="radio" name="time" id="flexRadioDefault2">
+                                <label class="form-check-label" for="flexRadioDefault2">
+                                    Afternoon
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="form-label">Theater </label>
+                        <div class="form-group row">
+
+                            <div class="col-sm-9">
+                                @Html.DropDownList("theater-id1", (SelectList)ViewBag.Theaters, new { @class = "form-select", @id = "theater-id" })
+                            </div>
+                        </div>
+                        <br />
+                        <label class="form-label">Treatment Code </label>
+                        <div class="form-group row" style="display: flex;justify-content: space-evenly;">
+                            <div class="col-sm-9">
+                                @Html.DropDownList("treatment-code1", (SelectList)ViewBag.TreatmentCodes, new { @class = "form-select", @id = "treatment-code" })
+                            </div>
+                            <br />
+                            <br />
+                            <button id="btn-add" onclick="AddCode()" type="button" class="btn btn-success w-50 text-white">Add Code</button>
+                            <a style="width:unset;display:none;margin-left:-25%" id="med-err" role="button" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-title="Treatment Code Error"><img src="/css/icons/cross.png" style="width:30px" /></a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-1" style="display: flex;flex-direction: column;align-items: center;">
+                        <h4 class="card-title">Selected Treatment Codes</h4>
+                        <div class="card">
+                            <div class="card-body">
+
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Code</th>
+                                                <th>Description</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="text-danger">Non Selected</td>
+
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <br />
+                <div class="row" style="display: flex;flex-direction: column;align-items: center;">
+                    <button id="submit-form" type="button" class="badge badge-success w-50" style="font-size:larger">Update Booking</button>
+
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal-center" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Surgery Booking</h5>
+            </div>
+            <div class="modal-body">
+                <div class="text-center" id="modalbody">
+                    <div class="spinner-border text-primary" id="spinner" role="status"></div><br /><span class="sr-only">Loading...</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        const Tcodes = [];
+        var patientFound = false;
+        const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+        const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+        function AddCode() {
+            if (patientFound) {
+                var e = document.getElementById("treatment-code");
+                var v = e.value;
+                if (Tcodes.length > 0) {
+                    for (let i = 0; i < Tcodes.length; i++) {
+                        let obj = Tcodes[i];
+                        if (obj.TreatmentId == e.value) {
+                            var zx = `${obj.TreatmentName} has been added already`;
+
+                            console.log(zx)
+                            $('#med-err').attr('data-bs-content', zx);
+                            $("#med-err").show();
+
+                            return false;
+                        }
+
+                    }
+                }
+                $("#med-err").hide();
+                var t = e.options[e.selectedIndex].text;
+                var obj = { TreatmentId: v, TreatmentName: t };
+                Tcodes.push(obj);
+                $('#patientID').attr('readonly', true);
+                Trefresh();
+                $('#id-error').hide();
+            }
+            else {
+                $('#id-error').show();
+            }
+
+        }
+        $(document).ready(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("SearchAppointment", "Surgeon", new {Id = Model.Id })",
+                data: '@Model.Id',
+                contentType: "application/json",
+                success: function (response) {
+                    body = $('#patient-info')
+                    body.empty();
+                    if (response != null) {
+                        if (response.bmi == null || response.bmi.w == '' || response.bmi.h == null || response.bmi.h == '' || response.bmi.bmi == null || response.bmi.bmi == '') {
+                            bodyy = $('#patient-info-bmi');
+                            bodyy.empty();
+                            bodyy.append('<p>Please Visit nurse to capture vitals</p>');
+                        }
+                        else {
+                            bodyy = $('#patient-info-bmi');
+                            bodyy.empty();
+                            bodyy.append('<p>Weight: ' + response.bmi.w + ' KG</p><p> Height: ' + response.bmi.h + ' CM</p><p>BMI: ' + response.bmi.bmi + '</p>');
+                        }
+                        Codes(response);
+                        Patient(response.patient);
+                        $('#theater-id').val(response.theaterId);
+                        $('#AnaeId').val(response.anaeId);
+                        let z = new Date(response.date);
+                        let d = z.getFullYear() + '-0' + (z.getMonth() + 1) + '-' + z.getDate();
+                        $('#date').val(d);
+                        $('#time').val(response.time);
+                    }
+                    else {
+                        $('#modal-center').modal('show');
+
+                        body = $("#modalbody");
+                        body.empty();
+                        body.append('<p class="text-danger">Something Wrong. </p>');
+                        setTimeout(function () {
+                            $('#modal-center').modal('hide');
+                            body.empty();
+                            body.append('<div class="spinner-border text-primary" id="spinner" role="status"></div><br /><span class="sr-only">Loading...</span>');
+                            window.location.href = '@Url.Action("Appointments","Surgeon")';
+                        }, 2000);
+                    }
+
+                }
+
+            });
+        });
+        function Patient(response) {
+            body = $('#patient-info');
+            body.append('<p>Name: ' + response.name + ' ' + response.surname + '</p><p> Email: ' + response.email + '</p><p>Gender: ' + response.gender + '</p><p> Phone Number: ' + response.phoneNumber + '</p>');
+            $('#patientID').val(response.idNumber);
+            $('#patientID').attr('readonly', true);
+            patientFound = true;
+        }
+        function Codes(a) {
+            for (let i = 0; i < a.tcode.length; i++) {
+                let x = a.tcode[i]
+                let z = { TreatmentId: x.treatmentId, TreatmentName: x.treatmentName }
+                Tcodes.push(z);
+            }
+            Trefresh();
+        }
+        function Validate() {
+            if (patientFound == false) {
+                $('#id-error').show();
+                return false;
+            }
+            if (Tcodes.length == 0) {
+                $('#modal-center').modal('show');
+                body = $("#modalbody");
+                body.empty();
+                body.append('<p>Please add at least one treatment code</p>');
+                setTimeout(function () {
+                    $('#modal-center').modal('hide');
+                    body.empty();
+                    body.append('<div class="spinner-border text-primary" id="spinner" role="status"></div><br /><span class="sr-only">Loading...</span>');
+                }, 2000);
+                return false;
+            }
+            if ($('#time').val() == '') {
+                $('#modal-center').modal('show');
+
+                body = $("#modalbody");
+                body.empty();
+                body.append('<p>Please add surgry Time</p>');
+                setTimeout(function () {
+                    $('#modal-center').modal('hide');
+                    body.empty();
+                    body.append('<div class="spinner-border text-primary" id="spinner" role="status"></div><br /><span class="sr-only">Loading...</span>');
+                }, 2000);
+                return false;
+            }
+            if ($('#date').val() == '') {
+                $('#modal-center').modal('show');
+
+                body = $("#modalbody");
+                body.empty();
+                body.append('<p>Please add surgry Date</p>');
+                setTimeout(function () {
+                    $('#modal-center').modal('hide');
+                    body.empty();
+                    body.append('<div class="spinner-border text-primary" id="spinner" role="status"></div><br /><span class="sr-only">Loading...</span>');
+                }, 2000);
+                return false;
+            }
+            return true;
+        }
+        function Trefresh() {
+            tablebody = $("table tbody");
+            s = '';
+            for (let i = 0; i < Tcodes.length; i++) {
+                let obj = Tcodes[i];
+                s += '<tr><td>' + obj.TreatmentId + '</td><td>' + obj.TreatmentName + '</td><td><label onclick="RemoveCode(\'' + obj.TreatmentId + '\',\'' + obj.TreatmentName + '\')" class="badge badge-danger">Remove</label></td></tr>';
+            }
+            tablebody.empty();
+            tablebody.append(s);
+        }
+        function RemoveCode(value, text) {
+
+            for (let i = 0; i < Tcodes.length; i++) {
+                var obj = Tcodes[i];
+                if (obj.TreatmentId === value && obj.TreatmentName === text) {
+                    let spliced = Tcodes.splice(i, 1);
+                    break;
+                }
+            }
+            Trefresh();
+        }
+
+        $("#submit-form").click(function () {
+            var book = { SurgeonId: '@contextAccessor.HttpContext.Session.GetString("id")', PatientIDNumber: $('#patientID').val(), TheaterId: $('#theater-id').val(), Date: $('#date').val(), Codes: Tcodes, Time: $('input[name=time]:checked').val(), AnaeId: $('#AnaeId').val() };
+            //var book = { SurgeonId: 'x', PatientIDNumber: '123456789', TheaterId: '1', Date: $('#date').val(), Codes: Tcodes };
+            if (book != null && Validate()) {
+                $('#modal-center').modal('show');
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("UpdateAppointment", "Surgeon", new { Id = Model.Id })",
+                    data: JSON.stringify(book),
+                    contentType: "application/json",
+                    success: function (response) {
+                        if (response != null) {
+                            body = $("#modalbody");
+                            if (response.success) {
+                                body.empty();
+                                body.append('<img src="/css/icons/double-check.png" width="50" height="50"/><br/><p>' + response.message + '</p>');
+                                setTimeout(function () {
+                                    $('#modal-center').modal('hide');
+                                    body.empty();
+                                    body.append('<div class="spinner-border text-primary" id="spinner" role="status"></div><br /><span class="sr-only">Loading...</span>');
+                                    window.location.href = '@Url.Action("Appointments", "Surgeon")';
+                                }, 2000);
+                            } else {
+                                body.empty();
+                                body.append('<img src="/css/icons/cross.png" width="50" height="50"/><br/><p>' + response.message + '</p>');
+                                setTimeout(function () {
+                                    $('#modal-center').modal('hide');
+                                    body.empty();
+                                    body.append('<div class="spinner-border text-primary" id="spinner" role="status"></div><br /><span class="sr-only">Loading...</span>');
+                                }, 2000);
+                            }
+                        }
+                        else {
+                            alert("no response.");
+                        }
+
+                    }
+
+                });
+            }
+            else {
+                // body = $("#modalbody");
+                // body.empty();
+                // body.append('<img src="/css/icons/cross.png" width="50" height="50"/><br/><p>There is missing data</p>');
+                // setTimeout(function () {
+                //     $('#modal-center').modal('hide');
+                //     body.empty();
+                //     body.append('<div class="spinner-border text-primary" id="spinner" role="status"></div><br /><span class="sr-only">Loading...</span>');
+                // }, 5000);
+            }
+        });
+
+    </script>
+}
+
+
+
+

@@ -1,0 +1,240 @@
+﻿
+@{
+    ViewData["Title"] = "Prescriptions";
+}
+<div class="col-12 grid-margin">
+    @if (@TempData["error"] != null)
+    {
+        <div class="row justify-content-center">
+            <div class="alert alert-danger w-50 text-center">
+                <p style="font-size:x-large">@TempData["error"]</p>
+            </div>
+        </div>
+    }
+    @if (@TempData["pass"] != null)
+    {
+        <div class="row justify-content-center">
+            <div class="alert alert-success w-50 text-center">
+                <p style="font-size:x-large">@TempData["pass"]</p>
+            </div>
+        </div>
+    }
+    @model IEnumerable<DayHospital.Data.ViewModel.PrescriptionList>
+    <h2 class="text-center">Daily Prescription Report</h2>
+    <br />
+    <div class="row" style="justify-content:center">
+
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-sm-flex justify-content-between align-items-start">
+                        <div>
+                            <h4 class="card-title card-title-dash">Todays Prescriptions</h4>
+                            <p class="card-subtitle card-subtitle-dash">@DateTime.Now.ToString("dddd dd/MM/yyyy")</p>
+                        </div>
+                        <div>
+                            <a asp-action="AddPrescription" class="btn btn-primary btn-lg text-white mb-0 me-0" ><i class="menu-icon mdi mdi-pill"></i>New Prescription</a>
+                        </div>
+                    </div>
+                    <div class="table-responsive" style="height:350px;">
+                        <table class="table table-hover mt-1 display" id="Pres-table" style="width:100%">
+                            <thead class="bg-light sticky-top">
+                                <tr>
+                                    <th>ID Number</th>
+                                    <th>Patient Name</th>
+                                    <th>Priority</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if(Model != null && Model.Count() > 0)
+                                {
+                                    foreach (var i in Model)
+                                    {
+                                        <tr>
+                                            <td>@i.PatId</td>
+                                            <td class="text-capitalize">@i.Patient</td>
+                                            <td>@i.Priority</td>
+                                            <td>@i.Date</td>
+                                            <td>@i.Status</td>
+                                            @if (@i.Status == "Prescribed")
+                                            {
+                                                <td> <a href="@Url.Action("EditPrescription","Surgeon", new { Id = i.PresId})" style="text-decoration: unset;" class="badge badge-primary"><i class="fa-regular fa-pen-to-square"></i> Edit</a></td>
+                                                <td> <a href="@Url.Action("DeletePrescription","Surgeon", new { Id = i.PresId})" style="text-decoration: unset;" class="badge badge-danger"> <i class="fa-solid fa-delete-left"></i> Delete </a></td>
+                                            }
+                                            else
+                                            {
+                                                <td> <a href="@Url.Action("ViewPrescription","Surgeon", new { Id = i.PresId})" style="text-decoration: unset;" class="badge badge-primary"><i class="fa-regular fa-eye"></i> View</a></td>
+                                                <td> </td>
+                                            }
+
+                                        </tr>
+                                    }
+                                }
+                                
+                                
+                            </tbody>
+                            
+                        </table>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <br />
+    <div class="row" style="justify-content:center">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-sm-flex justify-content-between align-items-start">
+                        <div>
+                            <h4 class="card-title card-title-dash">Search Prescriptions</h4>
+                            <p class="card-subtitle card-subtitle-dash">Search using Patient's ID Number</p>
+                        </div>
+                        <div>
+                            <input class="form-control" id="patientID" maxlength="13" placeholder="ID Number" autocomplete="off" />
+                        </div>
+                    </div>
+                    <div class="table-responsive" style="height:350px;">
+                        <table class="table table-hover mt-1" id="search-Pres" style="width:100%">
+                            <thead class="bg-light sticky-top">
+                                <tr>
+                                    <th>Patient Name</th>
+                                    <th>Priority</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="prescription-body">
+                                
+
+                            </tbody>
+
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script src="https://cdn.datatables.net/2.0.4/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.0.7/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.0.7/js/dataTables.bootstrap5.js"></script>
+    <script>
+        $("#patientID").on('input', function () {
+            body = $('#prescription-body')
+            body.empty();
+            if ($('#patientID').val().length == 13) {
+                data = { Id: $('#patientID').val() }
+                body.append('<div class="spinner-border text-primary" id="spinner" role="status"></div><br /><span class="sr-only">Loading...</span>');
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("SearchPatientPrescription", "Surgeon")",
+                    data: data,
+                    contentType: "application/json",
+                    success: function (response) {
+                        if (response != null) {
+
+                            if (response.length > 0) {
+                                Prescriptions(response);
+                            }
+                            else {
+                                $('#presc-body').DataTable().destroy();
+                                body.empty();
+
+                            }
+                        }
+                        else {
+                            $('#presc-body').DataTable().destroy();
+                            body.empty();
+                        }
+
+                    }
+
+                });
+            }
+            else {
+                body.empty();
+            }
+        });
+        $(document).ready(function () {
+            var table = $('#Pres-table').DataTable({
+                "columnDefs": [
+                    { "type": "string", "targets": 0 },
+                    { "type": "string", "targets": 1 },
+                    { "type": "string", "targets": 2 },
+                    { "type": "date", "targets": 3 },
+                    { "type": "date", "targets": 4 },
+                    { "orderable": false, "targets": -1 },
+                    { "orderable": false, "targets": -2 },
+                    {
+                        targets: 3, // Assuming 'joinDate' is the property containing the date
+                        render: function (data, type, row) {
+                            // Format date as desired (assuming data is in ISO format)
+                            if (type === 'display' || type === 'filter') {
+                                var date = new Date(data);
+                                return date.toLocaleDateString('en-ZA', { year: 'numeric', month: 'short', day: 'numeric' });
+                            }
+                            return data; // For sorting and other purposes
+                        }
+                    }
+
+                ]
+            });
+        });
+        function Prescriptions(data) {
+            console.log(data);
+            var i = $.fn.DataTable.isDataTable('#search-Pres');
+            if (i) {
+                $('#search-Pres').DataTable().destroy();
+
+                var Presctable = $('#search-Pres').DataTable({
+                    "columnDefs": [
+                        { "type": "string", "targets": 0 }, // if it goes bust, change to string 
+                        { "type": "string", "targets": 1 },
+                        { "type": "date", "targets": 2 },
+                        { "type": "string", "targets": 3 },
+                        { "orderable": false, "targets": -1 },
+
+                    ]
+                });
+                Presctable.clear().draw();
+                $.each(data, function (index, item) {
+                    // Format date in desired format (assuming item.date is in YYYY-MM-DD format)
+                    var formattedDate = new Date(item.date).toLocaleDateString('en-ZA', { year: 'numeric', month: 'short', day: 'numeric' });
+                    var l = '<a href="@Url.Action("ViewPrescription")/' + item.prescriptionId + '"><label style="cursor: pointer;" class="badge badge-primary"><i class="fa-regular fa-eye"></i> View</label></a>'
+                    Presctable.row.add([item.patientName, item.priority, formattedDate, item.status, l]).draw();
+                });
+                return true;
+            }
+            var Presctable = $('#search-Pres').DataTable({
+                "columnDefs": [
+                    { "type": "string", "targets": 0 },
+                    { "type": "string", "targets": 1 },
+                    { "type": "date", "targets": 2 },
+                    { "type": "string", "targets": 3 },
+                    { "orderable": false, "targets": -1 },
+                ]
+            });
+            Presctable.clear().draw(); // Clear existing data
+            $.each(data, function (index, item) {
+                // Format date in desired format (assuming item.date is in YYYY-MM-DD format)
+                var formattedDate = new Date(item.date).toLocaleDateString('en-ZA', { year: 'numeric', month: 'short', day: 'numeric' });
+                var l = '<a href="@Url.Action("ViewPrescription")/' + item.prescriptionId + '"><label style="cursor: pointer;" class="badge badge-primary"><i class="fa-regular fa-eye"></i> View</label></a>'
+                Presctable.row.add([item.patientName, item.priority, formattedDate, item.status, l]).draw();
+            });
+        }
+    </script>
+}
+
+
+
+

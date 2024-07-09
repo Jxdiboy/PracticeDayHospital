@@ -1,0 +1,144 @@
+﻿@{
+    ViewData["Title"] = "Add Day Hospital Records";
+
+}
+@model DayHospital.Models.Admin.DayHospitalRecords
+<div class="col-12 grid-margin">
+    <div class="card">
+        <div class="card-body">
+            <div>
+                <h4 class="card-title text-center">Add Day Hospital Records</h4>
+            </div>
+            <div class="row justify-content-center">
+                <form class="forms-sample" method="post" asp-action="AddDayhospitalRecords" style="width:50%">
+
+                    <div class="form-group">
+                        <label asp-for="Name"></label>
+                        <input asp-for="Name" type="text" autocomplete="off" class="form-control" placeholder="Hospital Name">
+                        <span asp-validation-for="Name" class="text-danger"></span>
+
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="AddressLine1"></label> 
+                        <input asp-for="AddressLine1" type="text" autocomplete="off" class="form-control" placeholder="Address">
+                        <span asp-validation-for="AddressLine1" class="text-danger"></span>
+
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label">Province:</label>
+                        <select class="form-select" id="pat-province" name="Province" required>
+                            <option value="">Select Province</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label">City:</label>
+                        <select class="form-select" id="pat-city" name="City" required>
+                            <option value="">Select City</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label">Suburb:</label>
+                        <select class="form-select" id="pat-suburb" name="Suburb" required>
+                            <option value="">Select Suburb</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ContactNumber"></label>
+                        <input asp-for="ContactNumber" autocomplete="off" type="text" class="form-control" placeholder="Room Number">
+                        <span asp-validation-for="ContactNumber" class="text-danger"></span>
+
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Email"></label>
+                        <input asp-for="Email" autocomplete="off" type="text" class="form-control" placeholder="Room Number">
+                        <span asp-validation-for="Email" class="text-danger"></span>
+
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="PMEmail"></label>
+                        <input asp-for="PMEmail" autocomplete="off" type="text" class="form-control" placeholder="Room Number">
+                        <span asp-validation-for="PMEmail" class="text-danger"></span>
+
+                    </div>
+                    <div class="row justify-content-center">
+                        <button style="width:25%" type="submit" class="btn btn-primary me-2">Submit</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Fetch provinces from the server
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("GetProvince", "Admin")",
+            dataType: "json",
+            success: function (result) {
+                var options = '<option value="">Select Province</option>';
+                for (var i = 0; i < result.length; i++) {
+                    options += '<option value="' + result[i].id + '">' + result[i].name + '</option>';
+                }
+                $('#pat-province').html(options);
+            },
+            error: function () {
+                alert("Failed to load provinces.");
+            }
+        });
+
+        // Populate cities based on selected province
+        $('#pat-province').change(function () {
+            var provinceId = $(this).val();
+            if (provinceId) {
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("GetCity", "Admin")",
+                    data: { id: provinceId },
+                    dataType: "json",
+                    success: function (result) {
+                        var options = '<option value="">Select City</option>';
+                        for (var i = 0; i < result.length; i++) {
+                            options += '<option value="' + result[i].id + '">' + result[i].name + '</option>';
+                        }
+                        $('#pat-city').html(options);
+                        $('#pat-suburb').html('<option value="">Select Suburb</option>');
+                    },
+                    error: function () {
+                        alert("Failed to load cities.");
+                    }
+                });
+            } else {
+                $('#pat-city').html('<option value="">Select City</option>');
+                $('#pat-suburb').html('<option value="">Select Suburb</option>');
+            }
+        });
+
+        // Populate suburbs based on selected city
+        $('#pat-city').change(function () {
+            var cityId = $(this).val();
+            if (cityId) {
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("GetSuburb", "Admin")",
+                    data: { id: cityId },
+                    dataType: "json",
+                    success: function (result) {
+                        var options = '<option value="">Select Suburb</option>';
+                        for (var i = 0; i < result.length; i++) {
+                            options += '<option value="' + result[i].id + '">' + result[i].name + '</option>';
+                        }
+                        $('#pat-suburb').html(options);
+                    },
+                    error: function () {
+                        alert("Failed to load suburbs.");
+                    }
+                });
+            } else {
+                $('#pat-suburb').html('<option value="">Select Suburb</option>');
+            }
+        });
+    });
+</script>

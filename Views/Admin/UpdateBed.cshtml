@@ -1,0 +1,40 @@
+﻿@*
+   ViewData["Title"] = "Patient History";
+
+*@
+@{
+    ViewData["Title"] = "Update Bed";
+
+}
+@model DayHospital.Models.Admin.Bed
+<div class="col-12 grid-margin">
+    <div class="card">
+        <div class="card-body">
+            <div>
+                <h4 class="card-title text-center">Update Room</h4>
+            </div>
+            <div class="row justify-content-center">
+
+                <form class="forms-sample" method="post" asp-action="UpdateBed" style="width:50%">
+                    <div class="form-group">
+                        <label asp-for="RoomNumber"></label>
+                        <input type="text" asp-for="RoomNumber" autocomplete="off" class="form-control" placeholder="Room Number">
+                        <span asp-validation-for="RoomNumber" class="text-danger"></span>
+
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="WardId"></label>
+                        @Html.DropDownListFor(m => m.WardId, new SelectList(ViewBag.Wards, "Id", "Name"), new { @class = "form-select" })
+                        <span asp-validation-for="WardId" class="text-danger"></span>
+
+                    </div>
+                    <input asp-for="Id" hidden/>
+                    <div class="row justify-content-center">
+                        <button type="submit" style="width:25%" class="btn btn-primary me-2">Submit</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>

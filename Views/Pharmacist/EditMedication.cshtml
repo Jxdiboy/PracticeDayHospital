@@ -1,0 +1,28 @@
+﻿@{
+    ViewData["Title"] = "Edit Medication";
+}
+<div class="card-body">
+    <div class="row" id="" style="justify-content:space-around">
+        <div class="col-12 col-md-5">
+            <div class="card">
+                <div class="card-body ">
+                    <h2 class="card-title text-center" style="font-size:25px">Edit Medication Record</h2>
+                    <br />
+                    <div class="form-group">
+                        <label style="font-size:18px">Medication Availibility</label>
+                        <select class="form-control" style="width:350px;background-color:white;color:black">
+                        <option>Choose..</option>
+                        <option>Available</option>
+                        <option>Unavailable</option>
+                    </select>
+                    </div>
+                    <br/>
+                    <div class="row" style="display:flex;justify-content: space-around">
+                        <a asp-action="ViewMedication" type="button" class="btn btn-info w-25 text-white" style="font-size:13px">Update Medication</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

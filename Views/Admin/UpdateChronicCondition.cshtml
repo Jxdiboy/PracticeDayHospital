@@ -1,0 +1,31 @@
+﻿@model DayHospital.Models.Admin.ChronicCondition
+@{
+    ViewData["Title"] = "Update ChronicCondition";
+
+}
+
+
+<div class="col-12 grid-margin">
+    <div class="card">
+        <div class="card-body">
+            <div>
+                <h4 class="card-title text-center">Update Chronic Condition</h4>
+            </div>
+            <div class="row justify-content-center">
+                <form class="forms-sample" method="post" asp-action="UpdateChronicCondition" style="width:50%">
+
+                    <div class="form-group">
+                        <label asp-for="Description"></label>
+                        <input asp-for="Description" type="text" autocomplete="off" class="form-control" placeholder="Chronic Condition Description">
+                        <span asp-validation-for="Description" class="text-danger"></span>
+
+                    </div>
+                    <div class="row justify-content-center">
+                        <button style="width:25%" type="submit" class="btn btn-primary me-2">Submit</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,81 @@
+﻿@{
+    ViewData["Title"] = "Prescription Slip";
+}
+<h2 class="card-title text-center" style="font-size:30px">Medical History Report</h2>
+<br />
+<div class="row" style="justify-content:space-evenly">
+    <div class="col-12 col-md-5">
+        <div class="card">
+            <div class="card-body " style="height:260px">
+                <h4 class="card-title text-center" style="font-size:20px">Patient Information</h4>
+                <ul>
+                    <li>ID Number: 012154616566</li>
+                    <li>Patient Name: John </li>
+                    <li>Patient Cell Number: 04727687422</li>
+                    <li>Email Address: JohnBravo@Gmail.com</li>
+                    <li>Sex:Male</li>
+                </ul>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-5">
+        <div class="card">
+            <div class="card-body ">
+                <h4 class="card-title text-center" style="font-size:20px">Patient Medical History</h4>
+                <h5>Allergies:</h5>
+                <ul>
+                    <li>Peanuts</li>
+                    <li>Bee stings</li>
+                </ul>
+                <h5>Current Medical Conditions:</h5>
+                <ul>
+                    <li>Diabetes</li>
+                    <li>High blood Pressure</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<br/>
+<h2 class="card-title text-center" style="font-size:30px">Patient Vital History</h2>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+<div class="row" style="justify-content:space-evenly">
+    <div class="col-12 col-md-5">
+        <div class="card">
+            <div class="card-body " >
+                <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+<br/>
+<div class="row" style="display:flex;justify-content: space-around;">
+    <a asp-action="ActivePres" type="button" class="btn btn-danger w-25 text-white" style="font-size:large">Return</a>
+</div>
+<script>
+    const xValues = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
+
+    new Chart("myChart", {
+        type: "line",
+        data: {
+            labels: xValues,
+            datasets: [{
+                data: [860, 1140, 1060, 1060, 1070, 1110, 1330, 2210, 7830, 2478],
+                borderColor: "red",
+                fill: false
+            }, {
+                data: [1600, 1700, 1700, 1900, 2000, 2700, 4000, 5000, 6000, 7000],
+                borderColor: "green",
+                fill: false
+            }, {
+                data: [300, 700, 2000, 5000, 6000, 4000, 2000, 1000, 200, 100],
+                borderColor: "blue",
+                fill: false
+            }]
+        },
+        options: {
+            legend: { display: false }
+        }
+    });
+</script>

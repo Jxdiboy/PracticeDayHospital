@@ -1,0 +1,765 @@
+﻿
+@{
+    ViewData["Title"] = "Surgery Booking";
+}
+@inject IHttpContextAccessor contextAccessor
+<div class="col-12 grid-margin">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title text-center">Surgery Booking</h4>
+            <form class="form-sample">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group row" style="display:flex;flex-direction:column;align-items:center">
+                            <h5 class="col-sm-3 col-form-label">Patient ID Number</h5>
+                            <span class="col-sm-3 form-label text-danger" style="display:none" id="id-error">Invalid ID Number</span>
+                            <div class="col-sm-4">
+                                <input id="patientID" maxlength="13" minlength="13" type="text" autocomplete="off" class="form-control text-center">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" id="" style="justify-content:space-around">
+                    <div class="card col-md-6">
+                        <div class="card-body">
+                            <h4 class="card-title">Patient Info</h4>
+                            <div class="row">
+                                <div class="col-md-9">
+                                    <div id="patient-info">
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                <br />
+                <br />
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="form-label">Anaesthesiologist </label>
+                        <div class="form-group row">
+                            <div class="col-sm-9">
+                                @Html.DropDownList("AnaeId1", (SelectList)ViewBag.Anae, new { @class = "form-select", @id = "AnaeId" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 row">
+                        <div class="col-md-6">
+                            <label class="form-label">Date</label>
+                            <div class="form-group row">
+                                <div class="col-sm-9">
+                                    <input type="date" id="date" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Session</label>
+                            <div class="form-group row">
+                                <div class="col-sm-6">
+                                    <div class="form-check" style="margin-left: 6%;">
+                                        <input class="form-check-input" value="Morning" type="radio" name="time" id="flexRadioDefault1" checked>
+                                        <label class="form-check-label" for="flexRadioDefault1">
+                                            Morning
+                                        </label>
+                                    </div>
+                                    <div class="form-check" style="margin-left: 6%;">
+                                        <input class="form-check-input" value="Afternoon" type="radio" name="time" id="flexRadioDefault2">
+                                        <label class="form-check-label" for="flexRadioDefault2">
+                                            Afternoon
+                                        </label>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="form-label">Theater </label>
+                        <div class="form-group row">
+                            
+                            <div class="col-sm-9">
+                                @Html.DropDownList("theater-id1", (SelectList)ViewBag.Theaters, new { @class = "form-select", @id = "theater-id" })
+                            </div>
+                        </div>
+                        <br />
+                        <label class="form-label">Treatment Code </label>
+                        <div class="form-group row" style="display: flex;justify-content: space-evenly;">
+                            <div class="col-sm-9">
+                                @Html.DropDownList("treatment-code1", (SelectList)ViewBag.TreatmentCodes, new { @class = "form-select", @id = "treatment-code" })
+                            </div>
+                            <br />
+                            <br />
+                            <button id="btn-add" onclick="AddCode()" type="button" class="btn btn-success w-50 text-white">Add Code</button>
+                            <a style="width:unset;display:none;margin-left:-25%" id="med-err" role="button" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-title="Treatment Code Error"><img src="/css/icons/cross.png" style="width:30px" /></a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-1" style="display: flex;flex-direction: column;align-items: center;">
+                        <h4 class="card-title">Selected Treatment Codes</h4>
+                        <div class="card">
+                            <div class="card-body">
+
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Code</th>
+                                                <th>Description</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="text-danger">Non Selected</td>
+
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <br />
+                <div class="row" style="display: flex;flex-direction: column;align-items: center;">
+                    <button id="submit-form" type="button" class="badge badge-success w-50" style="font-size:larger">Submit Booking</button>
+                    
+                </div>
+                
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal-center" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Surgery Booking</h5>
+            </div>
+            <div class="modal-body">
+                <div class="text-center" id="modalbody">
+                    <div class="spinner-border text-primary" id="spinner" role="status"></div><br /><span class="sr-only">Loading...</span>
+                </div> 
+            </div>
+            
+        </div>
+    </div>
+</div>
+<div class="modal" id="modal-center1" tabindex="-1">
+    <div class="modal-dialog modal-fullscreen modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="m-name">Patient's Vitals</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="">
+                    <div class="row">
+                        <div class="col-lg-6 grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                                    <h4 class="card-title text-center"><i class="fa-solid fa-heart-pulse"></i> Heart Rate</h4>
+                                    <canvas id="hr-line" width="465" height="232" style="display: block; width: 465px; height: 232px;" class="chartjs-render-monitor"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 grid-margin grid-margin-lg-0 stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                                    <h4 class="card-title text-center"><i class="fa-solid fa-droplet"></i> Blood Pressure</h4>
+                                    <canvas id="bp-line" width="465" height="232" style="display: block; width: 465px; height: 232px;" class="chartjs-render-monitor"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row" style="margin-top:5%">
+                        <div class="col-lg-6 grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                                    <h4 class="card-title text-center"><i class="fa-solid fa-mask-ventilator"></i> Blood Oxygen Level</h4>
+                                    <canvas id="bol-line" width="465" height="232" style="display: block; width: 465px; height: 232px;" class="chartjs-render-monitor"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                                    <h4 class="card-title text-center"><i class="fa-solid fa-hand-holding-droplet"></i> Glucose Level</h4>
+                                    <canvas id="bgl-line" width="465" height="232" style="display: block; width: 465px; height: 232px;" class="chartjs-render-monitor"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top:5%">
+
+                        <div class="col-lg-6 grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                                    <h4 class="card-title text-center"><i class="fa-solid fa-lungs"></i> Respiratory Rate</h4>
+                                    <canvas id="rr-line" width="465" height="232" style="display: block; width: 465px; height: 232px;" class="chartjs-render-monitor"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <br />
+            <br />
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="new-pat" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-center">Add new Patient</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" style="width:20px">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">First Name:</label>
+                        <input type="text" autocomplete="off" placeholder="First Name" class="form-control text-capitalize" id="new-pat-name">
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label">Surname:</label>
+                        <input type="text" autocomplete="off" placeholder="Surname" required class="form-control text-capitalize" id="new-pat-surname">
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label">ID Number:</label>
+                        <input type="text" autocomplete="off" placeholder="ID Number" maxlength="13" minlength="13" required class="form-control" id="new-pat-ID">
+                        <label class="col-form-label text-danger" style="display:none" id="er-id">Invalid ID Number</label>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label">Email Address:</label>
+                        <input type="email" autocomplete="off" placeholder="Email Address" required class="form-control" id="new-pat-email">
+                        <label class="col-form-label text-danger" style="display:none" id="er-email">Invalid Email Address</label>
+
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label">Phone Number:</label>
+                        <input type="text" maxlength="10" autocomplete="off" placeholder="eg. 0750001234" required class="form-control" id="new-pat-phone">
+                        <label class="col-form-label text-danger" style="display:none" id="er-phone">Invalid Phone Number</label>
+
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label">Gender:</label>
+                        <div class="form-check" style="margin-left: 6%;">
+                            <input class="form-check-input" value="Male" type="radio" name="new-pat-gender" id="flexRadioDefault1" checked>
+                            <label class="form-check-label" for="flexRadioDefault1">
+                                Male
+                            </label>
+                        </div>
+                        <div class="form-check" style="margin-left: 6%;">
+                            <input class="form-check-input" value="Female" type="radio" name="new-pat-gender" id="flexRadioDefault2">
+                            <label class="form-check-label" for="flexRadioDefault2">
+                                Female
+                            </label>
+                        </div>
+                    </div>
+                    @* <div class="form-group">
+                        <label class="col-form-label">Date Of Birth:</label>
+                        <input type="date" required class="form-control" id="new-pat-dob">
+                        <label class="col-form-label text-danger" style="display:none" id="er-dob">Please enter Date of birth</label>
+                    </div>
+
+                    
+                    <div class="form-group">
+                        <label class="col-form-label">Address Line 1:</label>
+                        <input type="text" class="form-control" id="new-pat-ad1">
+                        <label class="col-form-label text-danger" style="display:none" id="er-ad1">Please enter Address</label>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label">Province:</label>
+                        <select class="form-select" id="pat-province">
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label">City:</label>
+                        <select class="form-select" id="pat-city">
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label">Suburb:</label>
+                        <select class="form-select" id="pat-suburb">
+                        </select>
+                        <label class="col-form-label text-danger" style="display:none" id="er-sub">Please select a suburb</label>
+                    </div> *@
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="row" style="width:100%;">
+                    <div class="col-md-6 float-left" style="display: flex;align-content: center;align-items: center;justify-content: space-between;" id="pat-load">
+                    </div>
+                    <div class="col-md-6 float-right">
+                        <button id="new-pat-form" type="button" class="badge badge-success" style="font-size:large">Submit</button>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        const Tcodes = [];
+        var patientFound = false;
+        const Allergies = [];
+        const CurrentMed = [];
+        const ChronicCond = [];
+        const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+        const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+        function getRandomRgbColor() {
+            const r = Math.floor(Math.random() * 256);
+            const g = Math.floor(Math.random() * 256);
+            const b = Math.floor(Math.random() * 256);
+            return `rgba(${r}, ${g}, ${b}, 0.3)`;
+        }
+        $(document).ready(function () {
+           //new one
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetProvince")",
+                dataType: "Json",
+                contentType: "application/json",
+                success: function (result) {
+                    $('#pat-province').html('');
+                    var options = '';
+                    options += '<option value="0">Select</option>';
+                    for (let i = 0; i < result.length; i++) {
+                        const obj = result[i];
+                        options += '<option value="' + obj.id + '">' + obj.name + '</option>';
+                    }
+                    $('#pat-province').html(options);
+                }
+            });
+            $('#pat-province').on("change", function () {
+                var value = $('#pat-province').val();
+                var obj = { id: value };
+                $.ajax({
+                    type: "GET",
+                    data: obj,
+                    url: "@Url.Action("GetCity")",
+                    dataType: "Json",
+                    contentType: "application/json",
+                    success: function (result) {
+                        $('#pat-city').html('');
+                        var options = '';
+                        options += '<option value="0">Select</option>';
+                        for (let i = 0; i < result.length; i++) {
+                            const obj = result[i];
+                            options += '<option value="' + obj.id + '">' + obj.name + '</option>';
+                        }
+                        $('#pat-city').html(options);
+                    }
+                });
+            });
+            $('#pat-city').on("change", function () {
+
+                $.ajax({
+                    type: "GET",
+                    data: { id: $('#pat-city').val() },
+                    url: "@Url.Action("GetSuburb")",
+                    dataType: "Json",
+                    contentType: "application/json",
+                    success: function (result) {
+                        $('#pat-suburb').html('');
+                        var options = '';
+                        options += '<option value="0">Select</option>';
+                        for (let i = 0; i < result.length; i++) {
+                            const obj = result[i];
+                            options += '<option value="' + obj.id + '">' + obj.name + '</option>';
+                        }
+                        $('#pat-suburb').html(options);
+                    }
+                });
+            });
+        });
+        function NewPatModal() {
+            $('#new-pat').modal('show');
+            $('#new-pat-ID').val($('#patientID').val());
+        }
+        function NewPatVal() {
+            $('#er-id').hide();
+            $('#er-phone').hide();
+            $('#er-email').hide();
+            $('#er-sub').hide();
+            $('#er-dob').hide();
+            $('#er-ad1').hide();
+
+            let digCount = /^\d{13}$/;
+            let phoneCount = /^\d{10}$/;
+            let emailVal = /^[a-zA-Z0-9._%+-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            if (!digCount.test($('#new-pat-ID').val())) {
+                $('#er-id').show();
+                return false;
+            }
+            if (!phoneCount.test($('#new-pat-phone').val())) {
+                $('#er-phone').show();
+                return false;
+            }
+            if (!emailVal.test($('#new-pat-email').val())) {
+                $('#er-email').show();
+                return false;
+            }
+            $('#er-id').hide();
+            $('#er-phone').hide();
+            $('#er-email').hide();
+            $('#er-sub').hide();
+            $('#er-dob').hide();
+            $('#er-ad1').hide();
+            return true;
+
+        }
+        $("#new-pat-form").click(function () {
+            var data = {
+                Name: $('#new-pat-name').val(), Surname: $('#new-pat-surname').val(), IDNumber: $('#new-pat-ID').val(), Email: $('#new-pat-email').val(), PhoneNumber: $('#new-pat-phone').val(), Gender: $('input[name=new-pat-gender]:checked').val(), DateOfBirth: $('#new-pat-dob').val(), AddressLine1: $('#new-pat-ad1').val(), Role: 'Patient', Suburb: $('#pat-suburb').val(), AddressLine2: $('#pat-suburb option:selected').text()
+            };
+            body = $("#pat-load");
+            body.empty();
+            body.append('<div class="spinner-border text-primary" id="spinner" role="status"></div><br /><span class="sr-only">Loading...</span>');
+            if (NewPatVal() && data != null) {
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("AddPatient", "Surgeon")",
+                    data: JSON.stringify(data),
+                    contentType: "application/json",
+                    success: function (response) {
+                        if (response != null) {
+                            body.empty();
+                            if (response.success) {
+                                body.append('<img src="/css/icons/double-check.png" width="40" height="40"/><br/><p>' + response.message + '</p>');
+                                setTimeout(function () {
+                                    $('#new-pat').modal('hide');
+                                    body.empty();
+                                    $('#patientID').val($('#new-pat-ID').val()).trigger('input');
+                                }, 2000);
+                            } else {
+                                body.empty();
+                                body.append('<img src="/css/icons/cross.png" width="50" height="50"/><br/><p>' + response.message + '</p>');
+                            }
+                        }
+                        else {
+                            alert("no response.");
+                        }
+
+                    }
+
+                });
+            }
+            else {
+                body.empty();
+                body.append('<span class="text-danger">There is missing data</span>');
+            }
+        });
+        function VitalsHistory() {
+            $('#modal-center1').modal('show');
+        }
+        function SetGraphs(date, d, y, id, l) {
+            var data = {
+                labels: date,
+                datasets: [{
+                    label: l,
+                    data: d,
+                    backgroundColor: [
+                        getRandomRgbColor(),
+                    ],
+                    borderWidth: 1
+                }],
+            };
+            var options = {
+                scales: {
+                    xAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Date And Time'
+                        }
+                    }],
+                    yAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: y
+                        }
+                    }]
+                },
+                legend: {
+                    display: true
+                }
+
+            };
+            if ($(id).length) {
+                var lineChartCanvas = $(id).get(0).getContext("2d");
+                var lineChart = new Chart(lineChartCanvas, {
+                    type: 'line',
+                    data: data,
+                    options: options
+                });
+            }
+        }
+        function SetBP(d) {
+            var data = {
+                labels: d.date,
+                datasets: [{
+                    label: 'SYSTOLIC mm Hg',
+                    data: d.bps,
+                    backgroundColor: [
+                        getRandomRgbColor(),
+                    ],
+                    borderWidth: 2
+                }, {
+                    label: 'DIASTOLIC mm Hg',
+                    data: d.bpd,
+                    backgroundColor: [
+                        getRandomRgbColor(),
+                    ],
+                    borderWidth: 1
+                }],
+
+
+            };
+            var options = {
+                scales: {
+                    xAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Date And Time'
+                        }
+                    }],
+                    yAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Blood Pressure'
+                        }
+                    }]
+                },
+                legend: {
+                    display: true
+                }
+
+            };
+            if ($("#bp-line").length) {
+                var lineChartCanvas = $("#bp-line").get(0).getContext("2d");
+                var lineChart = new Chart(lineChartCanvas, {
+                    type: 'line',
+                    data: data,
+                    options: options
+                });
+            }
+        }
+        function AddCode() {
+            if (patientFound) {
+                var e = document.getElementById("treatment-code");
+                var v = e.value;
+                if (Tcodes.length > 0) {
+                    for (let i = 0; i < Tcodes.length; i++) {
+                        let obj = Tcodes[i];
+                        if (obj.TreatmentId == e.value) {
+                            var zx = `${obj.TreatmentName} has been added already`;
+
+                            console.log(zx)
+                            $('#med-err').attr('data-bs-content', zx);
+                            $("#med-err").show();
+
+                            return false;
+                        }
+
+                    }
+                }
+                $("#med-err").hide();
+                var t = e.options[e.selectedIndex].text;
+                var obj = { TreatmentId: v, TreatmentName: t };
+                
+                Tcodes.push(obj);
+                $('#patientID').attr('readonly', true);
+                Trefresh();
+                $('#id-error').hide();
+            }
+            else{
+                $('#id-error').show();
+            }
+            
+        }
+        $("#patientID").on('input', function () {
+            if ($('#patientID').val().length == 13) {
+                data = { Id: $('#patientID').val() }
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("SearchPatientB", "Surgeon")",
+                    data: data,
+                    contentType: "application/json",
+                    success: function (response) {
+                        body = $('#patient-info')
+                        body.empty();
+                        if (response != null) {
+
+                            if (response.p.idNumber != null) {
+                                patientFound = true;
+                                body.append('<p>Name: ' + response.p.name + ' ' + response.p.surname + '</p><p> Email: ' + response.p.email + '</p><p>Gender: ' + response.p.gender + '</p><p> Phone Number: ' + response.p.phoneNumber + '</p>');
+
+
+                            }
+                            else {
+                                body.append('<div class="row"><div class= "col-md-6" style="display:flex;justify-content: center" ><p><img src="/css/icons/cross.png" width="50" height="50" /> <br />Patient was not found!</p></div><div class="col-md-6"style="display:flex;justify-content: flex-end" ><a onclick="NewPatModal()" class="btn btn-primary btn-lg text-white" style="height:min-content"><i class="fa solid fa-user-plus"></i></i> Add New Patient </a></div></div>');
+                                patientFound = false;
+                                bodyy = $('#patient-info-bmi');
+                                bodyy.empty();
+                            }
+                        }
+                        else {
+                            body.append('<div class="row"><div class= "col-md-6" style="display:flex;justify-content: center" ><p><img src="/css/icons/cross.png" width="50" height="50" /> <br />Patient was not found!</p></div><div class="col-md-6"style="display:flex;justify-content: flex-end" ><a onclick="NewPatModal()" class="btn btn-primary btn-lg text-white" style="height:min-content"><i class="fa solid fa-user-plus"></i></i> Add New Patient </a></div></div>');
+                            patientFound = false;
+                            bodyy = $('#patient-info-bmi');
+                            bodyy.empty();
+                        }
+
+                    }
+
+                });
+                $('#id-error').hide();
+            }
+            else {
+                body = $('#patient-info')
+                body.empty();
+                patientFound = false;
+            }
+        });
+        function Validate() {
+            if (patientFound == false) {
+                $('#id-error').show();
+                return false;
+            }
+            if (Tcodes.length == 0) {
+                $('#modal-center').modal('show');
+                body = $("#modalbody");
+                body.empty();
+                body.append('<p>Please add at least one treatment code</p>');
+                setTimeout(function () {
+                    $('#modal-center').modal('hide');
+                    body.empty();
+                    body.append('<div class="spinner-border text-primary" id="spinner" role="status"></div><br /><span class="sr-only">Loading...</span>');
+                }, 2000);
+                return false;
+            }
+            if ($('#time').val() == '') {
+                $('#modal-center').modal('show');
+
+                body = $("#modalbody");
+                body.empty();
+                body.append('<p>Please add surgry Time</p>');
+                setTimeout(function () {
+                    $('#modal-center').modal('hide');
+                    body.empty();
+                    body.append('<div class="spinner-border text-primary" id="spinner" role="status"></div><br /><span class="sr-only">Loading...</span>');
+                }, 2000);
+                return false;
+            }
+            if ($('#date').val() == '') {
+                $('#modal-center').modal('show');
+
+                body = $("#modalbody");
+                body.empty();
+                body.append('<p>Please add surgry Date</p>');
+                setTimeout(function () {
+                    $('#modal-center').modal('hide');
+                    body.empty();
+                    body.append('<div class="spinner-border text-primary" id="spinner" role="status"></div><br /><span class="sr-only">Loading...</span>');
+                }, 2000);
+                return false;
+            }
+            return true;
+        }
+        function Trefresh() {
+            tablebody = $("table tbody");
+            s = '';
+            for (let i = 0; i < Tcodes.length; i++) {
+                let obj = Tcodes[i];
+                s += '<tr><td>' + obj.TreatmentId + '</td><td>' + obj.TreatmentName + '</td><td><label onclick="RemoveCode(\'' + obj.TreatmentId + '\',\'' + obj.TreatmentName + '\')" class="badge badge-danger">Remove</label></td></tr>';
+            }
+            tablebody.empty();
+            tablebody.append(s);
+        }
+        function RemoveCode(value, text) {
+
+            for (let i = 0; i < Tcodes.length; i++) {
+                var obj = Tcodes[i];
+                if (obj.TreatmentId === value && obj.TreatmentName === text) {
+                    let spliced = Tcodes.splice(i, 1);
+                    break;
+                }
+            }
+            Trefresh();
+        }
+
+        $("#submit-form").click(function () {
+            var book = { SurgeonId: '@contextAccessor.HttpContext.Session.GetString("id")', PatientIDNumber: $('#patientID').val(), TheaterId: $('#theater-id').val(), Date: $('#date').val(), Codes: Tcodes, Time: $('input[name=time]:checked').val(), AnaeId: $('#AnaeId').val() };
+            //var book = { SurgeonId: 'x', PatientIDNumber: '123456789', TheaterId: '1', Date: $('#date').val(), Codes: Tcodes };
+            if (book != null && Validate()) {
+                $('#modal-center').modal('show');
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("BookAppointment", "Surgeon")",
+                    data: JSON.stringify(book),
+                    contentType: "application/json",
+                    success: function (response) {
+                        if (response != null) {
+                            body = $("#modalbody");
+                            if (response.success) {
+                                body.empty();
+                                body.append('<img src="/css/icons/double-check.png" width="50" height="50"/><br/><p>' + response.message + '</p>');
+                                setTimeout(function () {
+                                    $('#modal-center').modal('hide');
+                                    body.empty();
+                                    body.append('<div class="spinner-border text-primary" id="spinner" role="status"></div><br /><span class="sr-only">Loading...</span>');
+                                    location.href = '@Url.Action("Appointments","Surgeon")';
+                                }, 2000);
+                            } else {
+                                body.empty();
+                                body.append('<img src="/css/icons/cross.png" width="50" height="50"/><br/><p>' + response.message + '</p>');
+                                setTimeout(function () {
+                                    $('#modal-center').modal('hide');
+                                    body.empty();
+                                    body.append('<div class="spinner-border text-primary" id="spinner" role="status"></div><br /><span class="sr-only">Loading...</span>');
+                                }, 2000);
+                            }
+                        }
+                        else {
+                            alert("no response.");
+                        }
+
+                    }
+
+                });
+            }
+            else {
+                // body = $("#modalbody");
+                // body.empty();
+                // body.append('<img src="/css/icons/cross.png" width="50" height="50"/><br/><p>There is missing data</p>');
+                // setTimeout(function () {
+                //     $('#modal-center').modal('hide');
+                //     body.empty();
+                //     body.append('<div class="spinner-border text-primary" id="spinner" role="status"></div><br /><span class="sr-only">Loading...</span>');
+                // }, 5000);
+            }
+        });
+        
+    </script>
+}
+
+

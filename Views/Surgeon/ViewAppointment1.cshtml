@@ -1,0 +1,156 @@
+﻿
+@{
+    //ViewData["Title"] = "ViewAppointment";
+    Layout = "_LayoutPDF";
+
+}
+@using DayHospital.Data.ViewModel
+@model BookingAppointmentVM2
+<div class="col-12 grid-margin">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mt-3">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 class="card-title">Booking Info</h4>
+                        </div>
+                        <div class="col-md-6 row">
+                            <a type="button" href="@Url.Action("ConfirmBooking", "Surgeon",  new {Id = Model.Id})" class="btn btn-outline-primary">Confirm Booking</a>
+                        </div>
+
+                    </div>
+                    <table width="100%" cellpadding="10">
+                        <tr class="border-bottom">
+                            <td>Date</td>
+                            <td>@Model.Date.ToShortDateString()</td>
+                        </tr>
+                        <tr class="border-bottom">
+                            <td>Time</td>
+                            <td>@Model.Date.ToShortTimeString()</td>
+                        </tr>
+
+                        <tr class="border-bottom">
+                            <td>Theater</td>
+                            <td>@Model.Theater</td>
+                        </tr>
+
+                        <tr class="border-bottom">
+                            <td>Anaesthesiologist</td>
+                            <td>@Model.Anae</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card mt-3">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 class="card-title">Patient Info</h4>
+                        </div>
+                        <div class="col-md-6 row">
+                            <a type="button" href="@Url.Action("AddPrescription", "Surgeon",  new {Id = Model.Patient.IDNumber})" class="btn btn-outline-primary"><i class="menu-icon mdi mdi mdi-pill"></i> Prescribe Medication</a>
+                        </div>
+                    </div>
+                    
+                    <table width="100%" cellpadding="10">
+                        <tr class="border-bottom">
+                            <td>Name & Surname</td>
+                            <td>@Model.Patient.Name @Model.Patient.Surname</td>
+                        </tr>
+                        <tr class="border-bottom">
+                            <td>ID Number</td>
+                            <td>@Model.Patient.IDNumber</td>
+                        </tr>
+                        <tr class="border-bottom">
+                            <td>Gender</td>
+                            <td>@Model.Patient.Gender</td>
+                        </tr>
+                        <tr class="border-bottom">
+                            <td>Phone Number</td>
+                            <td>@Model.Patient.PhoneNumber</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h3 class="card-title">Treatment Codes</h3>
+                            </div>
+                            <div class="col-md-6 row">
+                                <a type="button" href="@Url.Action("EditAppointment", "Surgeon",  new {Id = Model.Id})" class="btn btn-outline-primary"><i class="menu-icon mdi mdi-calendar"></i> Edit Booking</a>
+                            </div>
+                        </div>
+                        <div class="table-responsive" style="height:300px;">
+                            <table class="table table-hover mt-1">
+                                <thead class="bg-light sticky-top">
+                                    <tr>
+                                        <th>Description</th>
+                                        <th>Code</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.Codes == null || Model.Codes.Count() == 0)
+                                    {
+                                        <tr class="border-bottom text-danger">
+                                            <td>No Data Found.</td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        @foreach (var item in Model.Codes)
+                                        {
+                                            <tr class="border-bottom">
+                                                <td>@item.TreatmentName</td>
+                                                <td>@item.TreatmentId</td>
+                                            </tr>
+                                            
+                                        }
+                                    }
+                                </tbody>
+
+                            </table>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <h3 class="card-title">Admission Status</h3>
+                        <table width="100%" cellpadding="10">
+                            @if(string.IsNullOrEmpty(Model.Bed)){
+                                <tr class="border-bottom text-danger">
+                                    <td>Patient has not been admitted</td>
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr class="border-bottom">
+                                    <td>Bed</td>
+                                    <td>@Model.Bed</td>
+                                </tr>
+                                <tr class="border-bottom">
+                                    <td>Ward</td>
+                                    <td>@Model.Ward</td>
+                                </tr>
+                            }
+                            
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+

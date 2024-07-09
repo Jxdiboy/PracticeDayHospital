@@ -1,0 +1,289 @@
+﻿@model PatientUser
+
+@{
+    ViewData["Title"] = "Admit Patient";
+}
+
+<style>
+    .card {
+        width: 1000px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    .patient-info {
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+
+        .patient-info span {
+            font-weight: bold;
+        }
+
+    .edit-button, .save-button {
+        background-color: darkblue;
+        color: #fff;
+        border: none;
+        padding: 3px 6px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .save-button {
+        background-color: #28a745;
+    }
+
+    .editable {
+        display: none;
+    }
+
+    .editing .editable {
+        display: block;
+    }
+
+    .editing .non-editable {
+        display: none;
+    }
+</style>
+
+<div class="col-12 grid-margin">
+    @if (!string.IsNullOrEmpty(ViewBag.Message))
+    {
+        <div class="alert alert-success">
+            @ViewBag.Message
+        </div>
+    }
+
+    <div class="card">
+        <h4 class="card-title">Patient Information</h4>
+        <div class="patient-info non-editable">
+            <span>ID Number:</span> @Model.IDNumber
+        </div>
+        <div class="patient-info non-editable">
+            <span>Name:</span> @Model.Name
+        </div>
+        <div class="patient-info non-editable">
+            <span>Email:</span> @Model.Email
+        </div>
+        <div class="patient-info non-editable">
+            <span>Gender:</span> @Model.Gender
+        </div>
+        <div class="patient-info non-editable">
+            <span>Date Of Birth:</span> @Model.DateOfBirth?.ToString("yyyy-MM-dd")
+        </div>
+        <div class="patient-info non-editable">
+            <span>Phone Number:</span> @Model.PhoneNumber
+        </div>
+        <div class="patient-info non-editable">
+            <span>Address:</span> @Model.AddressLine1
+        </div>
+
+        <div class="buttons">
+            <button class="edit-button" onclick="toggleEdit(this)">Edit</button>
+            <form method="post" action="@Url.Action("SavePatientInfo", "Nurse")" class="editable">
+                <input type="hidden" name="IDNumber" value="@Model.IDNumber" />
+                <div class="patient-info">
+                    <span>Email:</span> <input type="text" name="Email" value="@Model.Email" />
+                </div>
+                <div class="patient-info">
+                    <span>Phone Number:</span> <input type="text" name="PhoneNumber" value="@Model.PhoneNumber" />
+                </div>
+                <div class="patient-info">
+                    <span>Date Of Birth:</span> <input type="date" name="DateOfBirth" value="@Model.DateOfBirth" />
+                </div>
+                <div class="patient-info">
+                    <div class="form-group" style="width:fit-content">
+                        <label class="col-form-label">Address Line 1:</label>
+                        <input type="text" class="form-control" id="new-pat-ad1" name="AddressLine1" value="@Model.AddressLine1" required>
+                    </div>
+                    <div class="form-group" style="width:fit-content">
+                        <label class="col-form-label">Province:</label>
+                        <select class="form-select" id="pat-province" name="Province" required>
+                            <option value="">Select Province</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="width:fit-content">
+                        <label class="col-form-label">City:</label>
+                        <select class="form-select" id="pat-city" name="City" required>
+                            <option value="">Select City</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="width:fit-content">
+                        <label class="col-form-label">Suburb:</label>
+                        <select class="form-select" id="pat-suburb" name="Suburb" required>
+                            <option value="">Select Suburb</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <button type="submit" class="save-button">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <h4 class="card-title">Complete Admission</h4>
+        <div class="col-md-6">
+            <label class="form-label">Ward</label>
+            <div class="form-group row">
+                <div class="col-sm-9">
+                    <select id="ward-select" class="form-select" required>
+                        <option value="">Select Ward</option>
+                        @foreach (var ward in ViewBag.Wards)
+                        {
+                            <option value="@ward.Id">@ward.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Beds available in selected Ward</label>
+            <div class="form-group row">
+                <div class="col-sm-9">
+                    <select id="bed-select" class="form-select" required>
+                        <option value="">Select Bed</option>
+                        @foreach (var bed in ViewBag.Beds)
+                        {
+                            <option value="@bed.Id">@bed.RoomNumber</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" id="admittedPatientId" value="@ViewBag.AdmittedPatientId" />
+        <button style="width:min-content;color:white" class="btn btn-primary me-2" onclick="nextpage()">Next</button>
+        <button style="width:min-content" class="btn btn-light" onclick="back()">Back</button>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function nextpage() {
+        var bedId = $('#bed-select').val();
+        var wardId = $('#ward-select').val();
+        var admittedPatientId = $('#admittedPatientId').val();
+
+        if (bedId && wardId) {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("UpdateAdmittedPatientBed", "Nurse")",
+                data: {
+                    id: admittedPatientId,
+                    bedId: bedId,
+                    wardId: wardId
+                },
+                success: function (response) {
+                    window.location.href = '/Nurse/CapturePatientInfo'; // Adjust the redirect URL as needed
+                },
+                error: function (xhr, status, error) {
+                    console.error("Failed to update patient bed.", error);
+                    alert("Failed to update patient bed.");
+                }
+            });
+        } else {
+            alert("Please select both a ward and a bed.");
+        }
+    }
+
+    function back() {
+        window.location.href = '/Nurse/Index';
+    }
+
+
+    $(document).ready(function () {
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("GetProvince")",
+            dataType: "json",
+            success: function (result) {
+                var options = '<option value="">Select Province</option>';
+                for (var i = 0; i < result.length; i++) {
+                    options += '<option value="' + result[i].id + '">' + result[i].name + '</option>';
+                }
+                $('#pat-province').html(options);
+            },
+            error: function () {
+                alert("Failed to load provinces.");
+            }
+        });
+
+        $('#pat-province').change(function () {
+            var provinceId = $(this).val();
+            if (provinceId) {
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("GetCity")",
+                    data: { id: provinceId },
+                    dataType: "json",
+                    success: function (result) {
+                        var options = '<option value="">Select City</option>';
+                        for (var i = 0; i < result.length; i++) {
+                            options += '<option value="' + result[i].id + '">' + result[i].name + '</option>';
+                        }
+                        $('#pat-city').html(options);
+                        $('#pat-suburb').html('<option value="">Select Suburb</option>');
+                    },
+                    error: function () {
+                        alert("Failed to load cities.");
+                    }
+                });
+            } else {
+                $('#pat-city').html('<option value="">Select City</option>');
+                $('#pat-suburb').html('<option value="">Select Suburb</option>');
+            }
+        });
+
+        $('#pat-city').change(function () {
+            var cityId = $(this).val();
+            if (cityId) {
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("GetSuburb")",
+                    data: { id: cityId },
+                    dataType: "json",
+                    success: function (result) {
+                        var options = '<option value="">Select Suburb</option>';
+                        for (var i = 0; i < result.length; i++) {
+                            options += '<option value="' + result[i].id + '">' + result[i].name + '</option>';
+                        }
+                        $('#pat-suburb').html(options);
+                    },
+                    error: function () {
+                        alert("Failed to load suburbs.");
+                    }
+                });
+            } else {
+                $('#pat-suburb').html('<option value="">Select Suburb</option>');
+            }
+        });
+
+        $('#ward-select').change(function () {
+            var wardId = $(this).val();
+            if (wardId) {
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("GetBedsByWard", "Nurse")",
+                    data: { wardId: wardId },
+                    dataType: "json",
+                    success: function (result) {
+                        var options = '<option value="">Select Bed</option>';
+                        for (var i = 0; i < result.length; i++) {
+                            options += '<option value="' + result[i].id + '">' + result[i].roomNumber + '</option>';
+                        }
+                        $('#bed-select').html(options);
+                    },
+                    error: function () {
+                        alert("Failed to load beds.");
+                    }
+                });
+            } else {
+                $('#bed-select').html('<option value="">Select Bed</option>');
+            }
+        });
+    });
+</script>

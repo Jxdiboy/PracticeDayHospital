@@ -1,0 +1,181 @@
+﻿@model DayHospital.Models.Medicine
+@{
+    ViewData["Title"] = "AddMedication";
+}
+
+<div class="card-body">
+    <div class="row" id="" style="justify-content:space-around">
+        <div class="col-12 col-md-9">
+            <div class="card">
+                <div class="card-body ">
+                    <h2 class="card-title text-center" style="font-size:25px">Add Medication to inventory</h2>
+                    <br />
+                    <form method="post" asp-action="AddMedication">
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label style="font-size:18px">Medication Name</label>
+                                <input asp-for=Name type="text" class="form-control" style="width:350px">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label style="font-size:18px">Select Dosage</label>
+                                <select asp-for=DosageId id="inputState" class="form-control" style="width:350px;background-color:white;color:black">
+                                    @foreach (var dosage in ViewBag.Dosages)
+                                    {
+                                        <option value="@dosage.Id">@dosage.Name</option>
+                                    }
+
+                                   @*  <option selected>Choose...</option>
+                                    <option>Syrup</option>
+                                    <option>Tablet</option>
+                                    <option>Capsule</option>
+                                    <option>Powder</option>
+                                    <option>Gel</option>
+                                    <option>Drops</option>
+                                    <option>Inhalers</option>
+                                    <option>Injections</option>
+                                    <option>Patches</option>
+                                    <option>Buccal medicines</option> *@
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label style="font-size:18px">Re-order Level</label>
+                                <input asp-for=ReOrderLevel type="number" class="form-control" style="width:300px">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label style="font-size:18px">Select Schedule</label>
+                                <select asp-for=ScheduleLevelId id="inputState" class="form-control" style="width:360px;background-color:white;color:black">
+                                    @foreach (var schedule in ViewBag.MedicationSchedules)
+                                    {
+                                        <option value="@schedule.Id">@schedule.Level</option>
+                                    }
+
+                                    @* <option selected>Choose...</option>
+                                    <option>Schedule 1</option>
+                                    <option>Schedule 2</option>
+                                    <option>Schedule 3</option>
+                                    <option>Schedule 4</option>
+                                    <option>Schedule 5</option>
+                                    <option>Schedule 6</option> *@
+                                    
+                                </select>
+                            </div>
+                        </div>
+                        <@* div>
+                            <label style="font-size:18px">Usage Indication</label>
+                            <p></p>
+                            <select id="input" class="form-control" style="width:400px;background-color:white;color:black">
+                                <option>Choose...</option>
+                                <option>Headache</option>
+                                <option>Sore Throat</option>
+                                <option>Body Ache</option>
+                                <option>Fever</option>
+                                <option>Chest Pains</option>
+                                <option>Inflamation</option>
+                                <option>Heart Burn</option>
+                            </select>
+                        </div>
+                        <br/> *@
+
+                        <div class="row">
+                            <div class="form-group col-md-5">
+                                <label style="font-size:18px">Active Ingredients</label>
+                                <select id="SelectActiveIngr" class="form-control" style="width:300px;background-color:white;color:black">
+                                    @foreach (var ingredient in ViewBag.ActiveIngredients)
+                                    {
+                                        <option value="@ingredient.Id">@ingredient.Name</option>
+                                    }
+                                    
+                                    @* <option selected>Choose...</option>
+                                    <option>acetaminophen</option>
+                                    <option>ibuprofen</option>
+                                    <option>atorvastatin</option>
+                                    <option>Aspirin</option>
+                                    <option>Lisinopril</option>
+                                    <option>Amlodipine</option>
+                                    <option>Cetirizine</option>
+                                    <option>Prednisone</option>
+                                    <option>Glyburide</option>
+                                    <option>Acyclovir</option>
+                                    <option>Ipratropium</option> *@
+                                </select>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label style="font-size:18px">Active Ingredients Strength</label>
+                                <input type="number" class="form-control" style="width:280px" id="InputStrength">
+                            </div>
+                            <div class="form-group col-md-2">
+                                <button type="button" class="btn btn-light" onclick="addItem()" style="margin-top:30px">ADD</button>
+                            </div>
+                        </div>
+                            <div class="col-sm-6">
+                                <div class="card" style="width:300px">
+                                    <div class="card-body">
+                                    <label style="font-size:18px">Selected Active Ingredients</label>
+                                    <p></p>
+                                        <ul id="SelectedIngr">
+
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        <br />
+                        <div class="row" style="display:flex;justify-content: space-around;">
+                            <button type="submit" class="btn btn-info w-25 text-white" style="font-size:large">Add Medication</button>
+                        </div>
+                        <input asp-for="Description" value="Strong" hidden />
+                        <input asp-for="Quantity" value=0 hidden />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function addItem() {
+        var selectedElement = document.getElementById("SelectActiveIngr");
+        var selectedItem = selectedElement.options[selectedElement.selectedIndex].text;
+        var inputValue = document.getElementById("InputStrength").value;
+
+        if (!inputValue) {
+            alert("Please enter a related value.");
+            return;
+        }
+
+        var listItem = document.createElement("li");
+        listItem.textContent = selectedItem + ": " + inputValue + "  " ;
+
+        var deleteButton = document.createElement("button");
+        deleteButton.textContent = "Delete";
+        deleteButton.style.fontSize = "10px"; // Smaller font size
+        deleteButton.style.padding = "1px 3px"; // Smaller padding
+        deleteButton.style.marginLeft = "10px";
+        deleteButton.onclick = function () {
+            this.parentElement.remove();
+        };
+
+        listItem.appendChild(deleteButton);
+        document.getElementById("SelectedIngr").appendChild(listItem);
+
+        
+    }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+     

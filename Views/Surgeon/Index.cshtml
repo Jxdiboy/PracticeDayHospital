@@ -1,0 +1,497 @@
+﻿
+@{
+    ViewData["Title"] = "Dashboard";
+}
+@model DayHospital.Data.ViewModel.SurgeonDashboard
+<style>
+    @@keyframes mymove {
+        from {
+            left: 0px;
+        }
+
+        to {
+            left: 39%;
+        }
+    }
+
+    @@keyframes bedmove {
+        from {
+            left: 0%;
+        }
+
+        to {
+            left: 31%;
+        }
+    }
+
+    .walk {
+        position: relative;
+        animation: mymove 3s;
+        animation-iteration-count: 1;
+        left: 39%;
+    }
+
+    .bed {
+        position: relative;
+        animation: bedmove 5s;
+        animation-iteration-count: 1;
+        animation-delay: 3s;
+        
+    }
+
+</style>
+@if (@TempData["error"] != null)
+{
+    <div class="row justify-content-center">
+        <div class="alert alert-danger w-50 text-center">
+            <p style="font-size:x-large">@TempData["error"]</p>
+        </div>
+    </div>
+}
+@if (@TempData["pass"] != null)
+{
+    <div class="row justify-content-center">
+        <div class="alert alert-success w-50 text-center">
+            <p style="font-size:x-large">@TempData["pass"]</p>
+        </div>
+    </div>
+}
+
+<div class="row">
+    
+    <div class="col-md-6 col-lg-6">
+        <h4 class="card-title  card-title-dash text-center">Admitted Patients</h4>
+        <div class="card card-rounded" style="max-height: 400px;overflow-y:auto">
+            <div class="card-body card-rounded">
+                
+                @* start here loop 5 times with a view model sending to view appointment*@
+                @if (Model != null)
+                {
+                    if (Model.AdmittedPats == null || Model.AdmittedPats.Count() == 0)
+                    {
+                        <a style="text-decoration:none;color:black">
+                            <div class="list align-items-center border-bottom py-2">
+                                <div class="row justify-content-center">
+                                    <div class="col-md-6">
+                                        <p class="text-center">
+                                            <img src="~/css/icons/empty-folder.png" width="50" />
+                                            <br />
+                                            There are no Admitted Patients
+                                        </p>
+                                    </div>
+                                    
+                                </div>
+
+                            </div>
+                        </a>
+
+                    }
+                    else
+                    {
+                        foreach (var i in Model.AdmittedPats)
+                        {
+                            <a href="@Url.Action("ViewAppointment", "Surgeon", new {Id = i.BookingId})" style="text-decoration:none;color:black">
+                                <div class="list align-items-center border-bottom py-2">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="wrapper w-100">
+                                                <p class="mb-2 font-weight-medium">
+                                                    Patient: @i.Patient<br /> <b>Nurse: @i.NurseName</b>
+
+                                                </p>
+                                                <p class="mb-2 font-weight-medium float-end">
+                                                    <i class="mdi mdi-tablet  me-1"></i>Theater: @i.Theater
+                                                </p>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div class="d-flex align-items-center">
+                                                        <i class="mdi mdi-calendar text-muted me-1"></i>
+                                                        <p class="mb-0 text-small text-muted">@i.DateWithSession</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="wrapper w-100">
+                                                <p class="mb-2 font-weight-medium text-center">
+                                                    Admitted at:
+                                                </p>
+                                                <p class="mb-2 font-weight-medium float-end">
+                                                    <i class="mdi mdi-seat-individual-suite  me-1"></i> Bed: @i.Bed
+                                                </p>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div class="d-flex align-items-center">
+                                                        <i class="mdi mdi-glassdoor me-1"></i>
+                                                        <p class="mb-0 text-small">Ward: @i.Ward</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </a>
+                            <br />
+                        }
+                    }
+                }
+                else
+                {
+                    <a style="text-decoration:none;color:black">
+                        <div class="list align-items-center border-bottom py-2">
+                            <div class="row justify-content-center">
+                                <div class="col-md-6">
+                                    <p class="text-center">
+                                        <img src="~/css/icons/empty-folder.png" width="50" />
+                                        <br />
+                                        There are no Admitted Patients
+                                    </p>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </a>
+                }
+
+                <div class="list align-items-center pt-3">
+                    <div class="wrapper w-100">
+                        <p class="mb-0">
+                            @* <a asp-action="Appointments" class="fw-bold text-primary">Show all <i class="mdi mdi-arrow-right ms-2"></i></a> *@
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-6 ">
+        <h4 class="card-title  card-title-dash text-center">Awaiting Discharge</h4>
+        <div class="card card-rounded" style="max-height: 400px;overflow-y:auto">
+            <div class="card-body card-rounded">
+                
+                @* start here loop 5 times with a view model sending to view appointment*@
+                @if (Model != null)
+                {
+                    if (Model.Discharges == null || Model.Discharges.Count() == 0)
+                    {
+                        <a style="text-decoration:none;color:black">
+                            <div class="list align-items-center border-bottom py-2">
+                                <div class="row justify-content-center">
+                                    <div class="col-md-6">
+                                        <p class="text-center">
+                                            <img src="~/css/icons/empty-folder.png" width="50" />
+                                            <br />
+                                            There are no Patients to be discharged
+                                        </p>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </a>
+
+                    }
+                    else
+                    {
+                        foreach (var i in Model.Discharges)
+                        {
+                            <div class="list align-items-center border-bottom" id="obj-@i.BookingId">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="wrapper w-100">
+                                                <p class="mb-2 font-weight-medium">
+                                                    @i.Patient
+                                                </p>
+                                                <p class="mb-2 font-weight-medium float-end">
+                                                    Gender: @i.Gender
+                                                </p>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div class="d-flex align-items-center">
+                                                        <p class="mb-0 text-small">ID No.: @i.PatId</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="wrapper w-100">
+                                            <p class="mb-2 font-weight-medium text-center">
+                                                Admitted at:
+                                            </p>
+                                            <p class="mb-2 font-weight-medium float-end">
+                                                <i class="mdi mdi-seat-individual-suite  me-1"></i> Bed: @i.Bed
+                                            </p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="mdi mdi-glassdoor me-1"></i>
+                                                    <p class="mb-0 text-small">Ward: @i.Ward</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6" style="display: flex;justify-content: center;align-items: center;">
+                                        <div class="form-group">
+                                            <input class="form-control" type="text" autocomplete="off" placeholder="Note" id="c-@i.BookingId" />@*Even here youll need to add the int ID*@
+                                            <input class="form-control" style="margin-top:2%" type="time" autocomplete="off" placeholder="Note" id="cd-@i.BookingId" /> @*even here add id*@
+                                            <br />
+                                            <a onclick="Discharge('@i.BookingId')" class="btn btn-warning">Discharge</a>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div id="ani-load-@i.BookingId" style="display:none">
+                                    @*even here add id*@
+                                    <img id="walk-@i.BookingId" src="~/css/icons/walk.gif" width="50" />@*even here add id*@
+                                    <img src="~/css/icons/hospitalization.gif" width="50" style="margin-left: 40%;" />
+                                    <img id="bed-@i.BookingId" style="display:none" src="~/css/icons/walk.gif" width="50" />@*even here add id*@
+                                    <img src="~/css/icons/family.gif" style="float:right" width="50" />
+                                </div>
+                                <div class="alert alert-danger" style="display:none;" id="err-@i.BookingId"><h6> Sorry. Something went wrong. Page will refresh in 5 seconds.</h6></div>@*even here add id*@
+                            </div>
+                            <br />
+                        }
+                    }
+                }
+                else
+                {
+                    <a style="text-decoration:none;color:black">
+                        <div class="list align-items-center border-bottom py-2">
+                            <div class="row justify-content-center">
+                                <div class="col-md-6">
+                                    <p class="text-center">
+                                        <img src="~/css/icons/empty-folder.png" width="50" />
+                                        <br />
+                                        There are no Patients to be discharged
+
+                                    </p>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </a>
+                }
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<br />
+<div class="row">
+   
+
+    @if (Model != null)
+    {
+        @if (Model.Prescriptions == null || Model.Prescriptions.Count() == 0)
+        {
+
+        }
+        else
+        {
+            <div class="col-md-7">
+                <h4 class="card-title  card-title-dash text-center">Rejected Prescriptions</h4>
+                <div class="card card-rounded" style="max-height: 400px;overflow-y:auto">
+                    <div class="card-body card-rounded">
+                        <div class="table-responsive" style="height:350px;">
+                            <table class="table table-hover mt-1 display" style="width:100%" id="rej-prec">
+                                @* <table class="table table-hover mt-1" class="" id="past-prec"> *@
+                                @* https://datatables.net/examples/basic_init/filter_only.html just remove the last 2 scripts and the datatable in the script *@
+
+                                <thead class="bg-light sticky-top">
+                                    <tr>
+                                        <th>Pharmacist</th>
+                                        <th>Patient Name</th>
+                                        <th>Priority</th>
+                                        <th>Date</th>
+                                        <th>Reason</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model != null)
+                                    {
+                                        if (Model.Prescriptions == null || Model.Prescriptions.Count() == 0)
+                                        {
+
+                                        }
+                                        else
+                                        {
+                                            foreach (var i in Model.Prescriptions)
+                                            {
+                                                <tr>
+                                                    <td>@i.Phrama</td>
+                                                    <td>@i.Patient</td>
+                                                    <td>@i.Priority</td>
+                                                    <td>@i.Date</td>
+                                                    <td><a onclick="DisplayReason('@i.FullReason')" style="text-decoration:none;cursor:pointer" >@i.Reason</a></td>
+                                                    <td> <a href="@Url.Action("AddPrescription","Surgeon", new { Id = i.PatientId, PresID = i.PresID})" class="badge badge-primary">New</a></td>
+                                                </tr>
+                                            }
+                                        }
+                                    }
+
+                                </tbody>
+
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        }
+    }
+    @if (Model != null)
+    {
+        @if (Model.Stats == null || Model.Stats.Total == 0)
+        {
+
+        }
+        else
+        {
+            <div class="col-md-5">
+                <h4 class="card-title  card-title-dash text-center">Today's Appointments</h4>
+                <div class="card card-rounded">
+                    <div class="card-body">
+                        <table class="" style="line-height:1.7" width="100%" cellpadding="10">
+
+                            <tr class="border-bottom">
+                                <td>Admitted Patients</td>
+                                <td>@Model.Stats.Admitted</td>
+                            </tr>
+
+                            <tr class="border-bottom">
+                                <td>Discharged Patients</td>
+                                <td>@Model.Stats.Discharged</td>
+                            </tr>
+
+                            <tr class="border-bottom">
+                                <td>Haven't Confirmed Booking</td>
+                                <td>@Model.Stats.LateArrivals</td>
+                            </tr>
+                            <tr class="border-bottom ">
+                                <td>Total Appointment(s)</td>
+                                <td><b>@Model.Stats.Total</b></td>
+                            </tr>
+
+                        </table>
+                        <hr />
+                    </div>
+
+                </div>
+            </div>
+
+        }
+    }
+</div>
+<div class="modal fade" id="reason" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-center" id="vital-name">Reject reason</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" style="width:20px">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="margin-top: -7%;">
+                <div class="card-body" >
+                    <p id="reason-body"></p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @* <script src="https://cdn.datatables.net/2.0.4/js/dataTables.js"></script> *@
+    <script src="https://cdn.datatables.net/2.0.7/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.0.7/js/dataTables.bootstrap5.js"></script>
+    <script>
+        let res = false
+        $(document).ready(function () {
+            var table = $('#rej-prec').DataTable({
+                "columnDefs": [
+                    { "type": "string", "targets": 0 },
+                    { "type": "string", "targets": 1 },
+                    { "type": "string", "targets": 2 },
+                    { "type": 'date', "targets": 3 },
+                    { "type": "string", "targets": 4 },
+                    { "orderable": false, "targets": -1 },
+                    {
+                        targets: 3, // Assuming 'joinDate' is the property containing the date
+                        render: function (data, type, row) {
+                            // Format date as desired (assuming data is in ISO format)
+                            if (type === 'display' || type === 'filter') {
+                                var date = new Date(data);
+                                return date.toLocaleDateString('en-ZA', { year: 'numeric', month: 'short', day: 'numeric' });
+                            }
+                            return data; // For sorting and other purposes
+                        }
+                    }
+
+                ]
+            });
+
+            
+            
+        });
+        function AjaxCall(n, i, time) {
+            var data = { note: n, id: i, time: time };
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("Discharge", "Surgeon")" + '/?note=' + n + '&id=' + i + '&time=' + time,
+                data: data,
+                dataType: "Json",
+                contentType: "application/json",
+                success: function (result) {
+                    res = result
+                }
+            });
+        }
+        function Discharge(i) {
+            let er = '#err-' + i;
+            let an = '#ani-load-' + i;
+            let wl = '#walk-' + i;
+            let bd = '#bed-' + i;
+            let ob = '#obj-' + i;
+            let c = '#c-' + i;
+            let cd = '#cd-' + i;
+            if ($(c).val() == '' || $(cd).val() == '') {
+                return false;
+            }
+            AjaxCall($(c).val(), i, $(cd).val());
+            console.log(res);
+            $(an).show();
+            $(wl).addClass('walk');
+            setTimeout(function () {
+                $(bd).show();
+                $(bd).addClass('walk');
+                $(wl).hide();
+            }, 3000);
+            setTimeout(function () {
+                if (res) {
+                    $(ob).empty();
+                    $(ob).append('<div class="alert alert-success"><h5> Patient will be discharged.</h5></div>');
+                    setTimeout(function () {
+                        $(ob).remove();
+                    }, 7000);
+                }
+                else {
+                    $(er).show();
+                    setTimeout(function () {
+                        location.reload();
+                    }, 5000);
+                }
+            }, 5000);
+
+
+        }
+        function DisplayReason(s){
+            $('#reason').modal('show');
+            $('#reason-body').empty();
+            $('#reason-body').append(s);
+        }
+    </script>
+}

@@ -1,0 +1,159 @@
+﻿@{
+    ViewData["Title"] = "ViewPatients";
+}
+
+<div class="content-wrapper">
+    <div class="page-header">
+        <h3 class="page-title">Patients </h3>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">All Patients</h4>
+            <div class="row">
+                <div class="col-12">
+                    <div class="table-responsive">
+                        <div id="order-listing_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
+                            <div class="row"><div class="col-sm-12 col-md-6"><div class="dataTables_length" id="order-listing_length"><label>Show <select name="order-listing_length" aria-controls="order-listing" class="custom-select custom-select-sm form-control"><option value="5">5</option><option value="10">10</option><option value="15">15</option><option value="-1">All</option></select> entries</label></div></div><div class="col-sm-12 col-md-6"><div id="order-listing_filter" class="dataTables_filter"><label><input type="search" class="form-control" placeholder="Search" aria-controls="order-listing"></label></div></div></div><div class="row">
+                                <div class="col-sm-12">
+                                    <table id="order-listing" class="table dataTable no-footer" aria-describedby="order-listing_info">
+                                        <thead>
+                                            <tr>
+                                                <th>Patient ID</th>
+                                                <th>Name</th>
+                                                <th>Surgeon</th>
+                                                <th>Ward</th>
+                                                <th>Bed</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            <tr class="odd">
+                                                <td class="sorting_1">1</td>
+                                                <td>Jade</td>
+                                                <td>Dr.Banda</td>
+                                                <td>Ward 1</td>
+                                                <td>Bed 20</td>
+                                                <td>
+                                                    <label class="badge badge-info">Admitted</label>
+                                                </td>
+                                                <td>
+                                                    <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#patientModal">
+                                                        View
+                                                    </button>
+
+
+                                            </tr>
+                                            <tr class="even">
+                                                <td class="sorting_1">2</td>
+                                                <td>John</td>
+                                                <td>Dr.Banda</td>
+                                               
+                                                <td>N/A</td>
+                                                <td>N/A</td>
+                                                <td>
+                                                    <label class="badge badge-danger">Pending Admission</label>
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-outline-primary">View</button>
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-outline-primary">Admit</button>
+                                                </td>
+                                            </tr>
+                                            <tr class="odd">
+                                                <td class="sorting_1">3</td>
+                                                <td>Sam</td>
+                                                <td>Dr.Banda</td>
+                                                
+                                                <td>Ward 2</td>
+                                                <td>Bed 10</td>
+                                                <td>
+                                                    <label class="badge badge-info">Admitted</label>
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-outline-primary">View</button>
+                                                </td>
+                                            </tr>
+                                            <tr class="even">
+                                                <td class="sorting_1">4</td>
+                                                <td>Jay</td>
+                                                <td>Dr.Banda</td>
+
+                                                <td>N/A</td>
+                                                <td>N/A</td>>
+                                                <td>
+                                                    <label class="badge badge-danger">Pending Admission</label>
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-outline-primary">View</button>
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-outline-primary">Admit</button>
+                                                </td>
+                                            </tr>
+
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div><div class="row"><div class="col-sm-12 col-md-5"><div class="dataTables_info" id="order-listing_info" role="status" aria-live="polite">Showing 1 to 4 of 4 entries</div></div><div class="col-sm-12 col-md-7"><div class="dataTables_paginate paging_simple_numbers" id="order-listing_paginate"><ul class="pagination"><li class="paginate_button page-item previous disabled" id="order-listing_previous"><a aria-controls="order-listing" aria-disabled="true" role="link" data-dt-idx="previous" tabindex="-1" class="page-link">Previous</a></li><li class="paginate_button page-item active"><a href="#" aria-controls="order-listing" role="link" aria-current="page" data-dt-idx="0" tabindex="0" class="page-link">1</a></li><li class="paginate_button page-item next disabled" id="order-listing_next"><a aria-controls="order-listing" aria-disabled="true" role="link" data-dt-idx="next" tabindex="-1" class="page-link">Next</a></li></ul></div></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="patientModal" tabindex="-1" role="dialog" aria-labelledby="patientModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="patientModalLabel">Patient Information</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="patientInfo">
+                    <!-- Placeholder for patient information -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+@* <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script> *@
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    // Populate modal with patient information
+    function populatePatientInfo() {
+        const user = {
+            Name: "Jade Appels",
+            Email: "jfappels@gmail.com",
+            Gender: "Male",
+            PhoneNumber: "0829607186",
+            IDNumber: "0109105229081"
+        };
+
+        // Populate modal with user information
+        document.getElementById('patientInfo').innerHTML = `
+                <p><strong>ID Number:</strong> ${user.IDNumber}</p>
+                  <p><strong>Name:</strong> ${user.Name}</p>
+                  <p><strong>Email:</strong> ${user.Email}</p>
+                  <p><strong>Gender:</strong> ${user.Gender}</p>
+                  <p><strong>Phone Number:</strong> ${user.PhoneNumber}</p>
+
+                `;
+    }
+
+    // Event listener for button click to populate modal with patient information
+    document.querySelector('.btn-outline-primary').addEventListener('click', populatePatientInfo);
+</script>
+

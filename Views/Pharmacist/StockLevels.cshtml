@@ -1,0 +1,236 @@
+﻿@{
+    ViewData["Title"] = "StockLevels";
+}
+<h2 class="text-center" style="font-size:30px">Stock Count</h2>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
+<div style="float:right">
+    <a asp-action="OrderStock" class="btn btn-info" style="color:white;border-radius: 13px;font-size:15px;"><i class="fas fa-plus"></i> Order Stock</a>
+</div>
+<br />
+<div class="content-wrapper">
+    <div class="card">
+        <div class="card-body">
+            
+            <div class="d-sm-flex justify-content-between align-items-start">
+                <div>
+                    <h1 class="card-title" style="font-size:25px">Stock Orders</h1>
+                </div>
+                <div>
+                    <input class="form-control" id="patientID" maxlength="13" placeholder="Order Ref Number" autocomplete="off" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="table-responsive">
+                        <div id="order-listing_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
+                                <div class="col-sm-12">
+                                    <table id="order-listing" class="table dataTable no-footer" aria-describedby="order-listing_info">
+                                        <thead>
+                                            <tr>
+                                                <th>Medication ID</th>
+                                                <th>Order Ref Number</th>
+                                                <th>Medicine Name</th>
+                                                <th>Pharmacist Surname</th>
+                                                <th>Date</th>
+                                                <th>Quantity(Units)</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="odd">
+                                                <td class="sorting_1">1</td>
+                                                <td>01234</td>
+                                                <td>Pretizone</td>
+                                                <td>Goldman</td>
+                                                <td>15/05/2024</td>
+                                                <td>3</td>
+                                                <td>
+                                                    <label class="badge badge-success" style="width:80px">Received</label>
+                                                </td>
+                                            </tr>
+                                            <tr class="even">
+                                                <td class="sorting_1">2</td>
+                                                <td>05678</td>
+                                                <td>Panado</td>
+                                                <td>Goldman</td>
+                                                <td>16/05/2024</td>
+                                                <td>5</td>
+                                                <td>
+                                                <label class="badge badge-danger" style="width:80px">Pending</label>
+                                                </td>
+                                            </tr>
+                                            <tr class="odd">
+                                                <td class="sorting_1">3</td>
+                                                <td>03698</td>
+                                                <td>Alcougholex</td>
+                                                <td>Goldman</td>
+                                                <td>19/05/2024</td>
+                                                <td>7</td>
+                                                <td>
+                                                <label class="badge badge-success" style="width:80px">Received</label>
+                                                </td>
+                                            </tr>
+                                            <tr class="even">
+                                                <td class="sorting_1">4</td>
+                                                <td>03666</td>
+                                                <td>Tamiflu</td>
+                                                <td>Goldman</td>
+                                                <td>26/05/2024</td>
+                                                <td>20</td>
+                                                <td>
+                                                <label class="badge badge-success" style="width:80px">Received</label>
+                                                </td>
+                                            </tr> 
+                                            <tr class="odd">
+                                                <td class="sorting_1">5</td>
+                                                <td>06986</td>
+                                                <td>Relenza</td>
+                                                <td>Goldman</td>
+                                                <td>28/05/2024</td>
+                                                <td>33</td>
+                                                <td>
+                                                <label class="badge badge-danger" style="width:80px">Pending</label>
+                                                </td>
+                                            </tr>
+                                            <tr class="even">
+                                                <td class="sorting_1">6</td>
+                                                <td>07562</td>
+                                                <td>Rapivab</td>
+                                                <td>Goldman</td>
+                                                <td>29/05/2024</td>
+                                                <td>14</td>
+                                                <td>
+                                                <label class="badge badge-danger" style="width:80px">Pending</label>
+                                                </td>
+                                            </tr>
+                                            <tr class="even">
+                                                <td class="sorting_1">7</td>
+                                                <td>04593</td>
+                                                <td>ibuprofen</td>
+                                                <td>Goldman</td>
+                                                <td>29/05/2024</td>
+                                                <td>36</td>
+                                                <td>
+                                                <label class="badge badge-success" style="width:80px">Received</label>
+                                                </td>
+                                            </tr> 
+                                            <tr class="odd">
+                                                <td class="sorting_1">8</td>
+                                                <td>06977</td>
+                                                <td>Relenza</td>
+                                                <td>Goldman</td>
+                                                <td>30/05/2024</td>
+                                                <td>16</td>
+                                                <td>
+                                                <label class="badge badge-danger" style="width:80px">Pending</label>
+                                                </td>
+                                            </tr>
+                                            <tr class="even">
+                                                <td class="sorting_1">9</td>
+                                                <td>07543</td>
+                                                <td>Rapivab</td>
+                                                <td>Goldman</td>
+                                                <td>01/06/2024</td>
+                                                <td>44</td>
+                                                <td>
+                                                <label class="badge badge-success" style="width:80px">Received</label>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <br/>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-5">
+                                    <div class="dataTables_info" id="order-listing_info" role="status" aria-live="polite" style="font-size:12px">Showing 1 to 10 of 10 entries</div>
+                                </div>
+                            <div class="col-sm-12 col-md-7" style="font-size:12px">
+                                    <div class="dataTables_paginate paging_simple_numbers" id="order-listing_paginate"><ul class="pagination"><li class="paginate_button page-item previous disabled" id="order-listing_previous"><a aria-controls="order-listing" aria-disabled="true" role="link" data-dt-idx="previous" tabindex="-1" class="page-link">Previous</a></li><li class="paginate_button page-item active"><a href="#" aria-controls="order-listing" role="link" aria-current="page" data-dt-idx="0" tabindex="0" class="page-link">1</a></li><li class="paginate_button page-item next disabled" id="order-listing_next"><a aria-controls="order-listing" aria-disabled="true" role="link" data-dt-idx="next" tabindex="-1" class="page-link">Next</a></li></ul>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+            <div class="col-lg-6 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                        <h2 class="card-title">Stock Record</h2>
+                        <canvas id="doughnutChart1" width="300" height="150" style="display: block; height: 152px; width: 304px;" class="chartjs-render-monitor"></canvas>
+                    </div>
+                </div>
+                </div>
+            <div class="col-lg-6 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                        <h2 class="card-title">Medication Stock levels throughout the year</h2>
+                        <canvas id="barChart1" width="300" height="150" style="display: block; height: 152px; width: 304px;" class="chartjs-render-monitor"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+   
+
+
+
+
+
+<script>
+    var xValues = ["Stock on hand","Ordered Stock"];
+    var yValues = [80,20];
+    var barColors = [
+        "#b91d47",
+        "#00aba9"
+    ];
+
+    new Chart("doughnutChart1", {
+        type: "pie",
+        data: {
+            labels: xValues,
+            datasets: [{
+                backgroundColor: barColors,
+                data: yValues
+            }]
+        },
+        options: {
+            title: {
+                display: true,
+                text: ""
+            }
+        }
+    });
+</script>
+
+<script>
+    var xValues = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    var yValues = [100, 86, 72, 34, 55, 66, 49, 38, 24, 15, 73, 60];
+    var barColors = ["red", "green", "blue", "orange", "brown", "purple", "grey", "yellow", "pink", "gold", "black", "peach"];
+
+    new Chart("barChart1", {
+  type: "bar",
+  data: {
+    labels: xValues,
+    datasets: [{
+      backgroundColor: barColors,
+      data: yValues
+    }]
+  },
+  options: {
+    legend: {display: false},
+    title: {
+      display: true,
+      text: ""
+    }
+  }
+});
+</script>

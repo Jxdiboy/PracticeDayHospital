@@ -1,0 +1,149 @@
+﻿@using DayHospital.Data.ViewModel
+@model PrescriptionVM
+@{
+    ViewData["Title"] = "View Prescription";
+}
+
+<div class="col-12 grid-margin">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title text-center"></h4>
+            <div class="row justify-content-start">
+                <h3 class="text-start">Patient Information</h3>
+                <div class="col-md-6">
+                    <table style="border-spacing: 30px;" cellpadding="5">
+                        <tr>
+                            <td>ID Number:</td>
+                            <td>@Model.PatientId</td>
+                            
+                        </tr>
+                        <tr>
+                            <td>Full Name:</td>
+                            <td>@Model.User.Name @Model.User.Surname</td>
+                        </tr>
+                        <tr>
+                            <td>Email:</td>
+                            <td>
+                                @Model.User.Email
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Phone Number:</td>
+                            <td>
+                                @Model.User.PhoneNumber
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-md-6">
+                    <p class="card-text" style="font-size: large;line-height:1.6">
+                        Date: @Model.Date<br />
+                        Priority: @Model.Priority<br />
+                        Status: @Model.Status<br />
+                        @if (!string.IsNullOrEmpty(Model.Reason))
+                        {
+                        <p class="card-text" style="font-size: large;">Pharmacist: @Model.Pharama</p>
+                            {
+                                string x = Model.Reason.Length > 30 ? $"{Model.Reason[..30]} ..." : Model.Reason;
+                            <p class="card-text" style="font-size: large;">Reason: <a onclick="DisplayReason('@Model.Reason')" style="text-decoration:none;cursor:pointer">@x</a></p>
+
+                            }
+
+                        }
+                    </p>
+                </div>
+            </div>
+            <br />
+            <div class="col-md-12" style="display: flex;flex-direction: column;align-items: center;">
+                <h4 class="card-title">Prescription Medicine</h4>
+                <div class="card" style="width:100%">
+                    <div class="card-body">
+
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Medicine</th>
+                                        <th>Quantity</th>
+                                        <th>Administered Quantity</th>
+                                        <th>Instructions</th>
+                                        <th>Alert</th>
+                                        <th>Surgeon Reason</th>
+                                        <th>Pharmacist Reason</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model != null)
+                                    {
+                                        if (Model.Medicine.Count > 0)
+                                        {
+                                            foreach (var item in Model.Medicine)
+                                            {
+                                                <tr>
+                                                    <td>@item.Name</td>
+                                                    <td>@item.Quantity</td>
+                                                    <td>@item.AdministeredQuantity</td>
+                                                    <td>@item.Instructions</td>
+                                                    <td>@item.Reason1</td>
+                                                    <td>@item.Reason</td>
+                                                    <td>@item.PharmacistReason</td>
+
+                                                </tr>
+                                            }
+                                            
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                <td class="text-danger">No Medicine linked</td>
+
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td class="text-danger">No Medicine linked</td>
+
+                                        </tr>
+                                    }
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <br />
+        <br />
+    </div>
+</div>
+<div class="modal fade" id="reason" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-center" id="vital-name">Reject reason</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" style="width:20px">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="margin-top: -7%;">
+                <div class="card-body">
+                    <p id="reason-body"></p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    
+    function DisplayReason(s) {
+        $('#reason').modal('show');
+        $('#reason-body').empty();
+        $('#reason-body').append(s);
+    }
+</script>
+

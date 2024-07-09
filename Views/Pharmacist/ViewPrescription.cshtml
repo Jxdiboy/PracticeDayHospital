@@ -1,0 +1,169 @@
+﻿@{
+    ViewData["Title"] = "PrescriptionView";
+}
+<h2 class="text-center">Prescriptions</h2>
+<br/>
+<div class="row">
+    <div class=" col-md-6">
+        <div class="card card-rounded" style="width:100%;">
+            <div class="card-body">
+                <div class="d-sm-flex justify-content-between align-items-start">
+                    <div>
+                        <h2 class="card-title card-title-dash">Dispensed Prescriptions</h2>
+                    </div>
+                    <div>
+                        <input type="date" class="form-control" id="patientID" maxlength="13" autocomplete="off" />
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Patient ID  Number
+                                </th>
+                                <th>
+                                    Date
+                                </th>
+                                <th>
+                                    View Prescription
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>0123456789123</td>
+                                <td>10/02/2024</td>
+                                <td><a asp-action="PrescriptionSlip" type="button" class="btn btn-success" style="width:100px;margin-bottom:0px;color:white">View</a></td>
+
+                            </tr>
+                            <tr>
+                                <td>0301244535287</td>
+                                <td>11/02/2024</td>
+                                <td><button class="btn btn-success" style="width:100px;margin-bottom:0px;color:white">View</button></td>
+                            </tr>
+                            <tr>
+                                <td>0301249335782</td>
+                                <td>15/02/2024</td>
+                                <td><button class="btn btn-success" style="width:100px;margin-bottom:0px;color:white">View</button></td>
+                            </tr>
+                            <tr>
+                                <td>0301249335639</td>
+                                <td>16/02/2024</td>
+                                <td><button class="btn btn-success" style="width:100px;margin-bottom:0px;color:white">View</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    @* <div class="row justify-content-center"> *@
+    <div class=" col-md-6">
+        <div class="card card-rounded" style="width:100%;">
+            <div class="card-body">
+                <div class="d-sm-flex justify-content-between align-items-start">
+                    <div>
+                        <h2 class="card-title card-title-dash">Rejected Prescriptions</h2>
+                    </div>
+                    <div>
+                        <input type="date" class="form-control" id="patientID" maxlength="13" autocomplete="off" />
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Patient ID  Number
+                                </th>
+                                <th>
+                                    Date
+                                </th>
+                                <th>
+                                    View Script
+                                </th>
+                                <th>
+                                    View Reason
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>0123456789123</td>
+                                <td>10/02/2024</td>
+                                <td><button type="button" class="btn btn-success" onclick="ShowReason()" style="color:white">View</button></td>@* the pharm must be abke to see the script *@
+                                <td><button type="button" class="btn btn-danger" onclick="ShowReason()" style="color:white">View</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+</div>
+
+@* </div> *@
+</div>
+
+
+@* <div id="popup" style="display: none;">
+    <p>Panado x1 box</p>
+    <p>Alcougholex x1 bottle</p>
+    <p>Pretizones x24 tablets</p>
+    <button id="btn-close">Close</button>
+</div>
+
+<script>
+    var buttons = document.querySelectorAll('.btn-open-popup');
+    buttons.forEach(function (button) {
+        button.addEventListener('click', function () {
+            // Show the pop-up when button is clicked
+            document.getElementById('popup').style.display = 'block';
+        });
+    });
+
+    // Close pop-up when "Cancel" button is clicked
+    document.getElementById('btn-close').addEventListener('click', function () {
+        document.getElementById('popup').style.display = 'none';
+    });
+ </script> *@
+
+<div class="modal fade" id="Reason" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="exampleModalLongTitle">Reason for prescription Rejection</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <textarea class="form-control" id="message-text" style="height:70px" readonly>Patient is too old to be taking medication of this strength</textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" onclick="HideReason()" style="color:white">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function HideReason() {
+
+        $("#Reason").modal('hide');
+    }
+    function ShowReason() {
+
+        $("#Reason").modal('show');
+    }
+</script>
+
+

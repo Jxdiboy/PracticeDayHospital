@@ -1,0 +1,157 @@
+﻿@{
+    ViewData["Title"] = "Prescription Details";
+}     
+
+<h2 class="text-center">Prescription Details</h2>
+<div class="main-wrapper">
+    <div class="page-wrapper">
+        <div class="content">
+            <div>
+                <div class="content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row custom-invoice">
+                                        <div class="col-6 col-sm-6 m-b-20">
+                                            <img src="assets/img/logo-dark.png" class="inv-logo" alt="">
+                                            <ul class="list-unstyled">
+                                                <li>Encrypted</li>
+                                                <li>8 Summerstrand Road</li>
+                                                <li>University Way, PE, 6001</li>
+                                                <li>Port Elizabeth</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-6 col-sm-6 m-b-20">
+                                            <div class="invoice-details">
+                                                <ul class="list-unstyled">
+                                                    <li>Date: <span>@Model.PrescriptionDate</span></li>
+                                                    <li>ID Number: @Model.PatientID </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6 col-lg-6 m-b-20">
+                                            <h5>Prescribed To: </h5>
+                                            <ul class="list-unstyled">
+                                                <li>
+                                                    <h5><strong>@Model.PatientName</strong></h5>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-sm-15 col-lg-6 m-b-20">
+                                            <div class="invoices-view">
+                                                <span class="text-muted">Prescribed By:</span>
+                                                <ul class="list-unstyled invoice-payment-details">
+                                                    <li>
+                                                        <h5>Pharmacist: <span class="text-right">@Model.PharmacistName</span></h5>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>MEDICATION</th>
+                                                    <th>FREQUENCY</th>
+                                                    <th>QUANTITY</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var medication in Model.Medications)
+                                                {
+                                                    <tr>
+                                                        <td>@medication.MedicationName</td>
+                                                        <td>@medication.Frequency</td>
+                                                        <td>@medication.Quantity</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div>
+                                        <div class="col-sm-15 col-lg-6 m-b-20">
+                                            <div class="invoices-view">
+                                                <div id="medication-time"></div>
+                                                <div id="medicationReceived">
+                                                    <span class="text-muted">Administer Medication For:</span>
+                                                    <ul class="list-unstyled invoice-payment-details">
+                                                        <li>
+                                                            <h5><span class="text-right" id="patientName">@Model.PatientName</span></h5><!-- Display patient's name dynamically -->
+                                                        </li>
+                                                    </ul>
+                                                    <button class="btn btn-info" id="administerButton" onclick="administerMedication()">Administer Medication</button>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Include jQuery library -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+
+
+    function administerMedication() {
+        // Disable the button to prevent multiple clicks
+        $('#administerButton').prop('disabled', true);
+        var currentTime = new Date();
+        var hours = currentTime.getHours();
+        var minutes = currentTime.getMinutes();
+        var seconds = currentTime.getSeconds();
+        var timeString = hours + ":" + minutes + ":" + seconds;
+
+        // Append medication details to the timestamp
+        var medicationDetails = "";
+        $("table tbody tr").each(function () {
+            var medicationName = $(this).find("td:eq(0)").text();
+            var quantity = $(this).find("td:eq(2)").text();
+            medicationDetails += medicationName + " - " + quantity + "\n";
+        });
+
+        // Display alert message with timestamp and medication details
+        var alertMessage = "Medication administered at: " + timeString + "\n\n";
+        alertMessage += "Medication Details:\n" + medicationDetails;
+
+        // Display the alert message
+        alert(alertMessage);
+
+        // Make an AJAX request to notify the server that medication is administered
+        $.ajax({
+            url: '@Url.Action("AdministerMedication", "Nurse")', // Replace with the correct controller action URL
+            type: 'POST',
+            data: { prescriptionId: '@Model.PrescriptionId' }, // Pass the prescription ID to the server
+            success: function (data) {
+                if (data.success) {
+                    // Update UI
+                    window.location.href = '/Nurse/ViewAdmittedPatients';
+                    // Redirect to a page or refresh the current page as needed
+                } else {
+                    // Display error message
+                    alert('Failed to administer medication. Please try again.');
+                }
+            },
+            error: function () {
+                // Display error message
+                alert('Failed to administer medication. Please try again.');
+            },
+            complete: function () {
+                // Re-enable the button after the request is complete
+                $('#administerButton').prop('disabled', false);
+            }
+        });
+    }
+</script>

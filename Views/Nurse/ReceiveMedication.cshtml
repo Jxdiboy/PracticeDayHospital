@@ -1,0 +1,174 @@
+﻿@{
+    ViewData["Title"] = "Receive Medication";
+}
+<h2 class="text-center">Prescription Details</h2>
+<div class="main-wrapper">
+    <div class="page-wrapper">
+        <div class="content">
+            <div>
+                <div class="content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row custom-invoice">
+                                        <div class="col-6 col-sm-6 m-b-20">
+                                            <img src="assets/img/logo-dark.png" class="inv-logo" alt="">
+                                            <ul class="list-unstyled">
+                                                <li>Encrypted</li>
+                                                <li>8 Summerstrand Road</li>
+                                                <li>University Way, PE, 6001</li>
+                                                <li>Port Elizabeth</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-6 col-sm-6 m-b-20">
+                                            <div class="invoice-details">
+                                                <ul class="list-unstyled">
+                                                    <li>Date: <span>12/05/2024</span></li>
+                                                    <li>ID Number:0109105229081 </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6 col-lg-6 m-b-20">
+
+                                            <h5>Prescribed To: </h5>
+                                            <ul class="list-unstyled">
+                                                <li>
+                                                    <h5><strong>Jade Appels</strong></h5>
+                                                </li>
+                                            </ul>
+
+                                        </div>
+                                        <div class="col-sm-15 col-lg-6 m-b-20">
+                                            <div class="invoices-view">
+                                                <span class="text-muted">Prescribed By:</span>
+                                                <ul class="list-unstyled invoice-payment-details">
+                                                    <li>
+                                                        <h5>Pharmacist: <span class="text-right">Mr Goldman</span></h5>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>MEDICATION</th>
+                                                    <th>FREQUENCY</th>
+                                                    <th>QUANTITY</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Panado</td>
+                                                    <td>twice p/d</td>
+                                                    <td>2</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Alcougholex</td>
+                                                    <td>twice p/d</td>
+                                                    <td>1</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Pretizones</td>
+                                                    <td>Four times p/d</td>
+                                                    <td>6</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div>
+                                        <div class="card">
+                                            <div id="medicationReceived">
+                                                <div class="col-sm-15 col-lg-6 m-b-20">
+                                                    <div class="invoices-view">
+                                                        <span class="text-muted">Status:</span>
+                                                        <ul class="list-unstyled invoice-payment-details">
+                                                            <li>
+                                                                <h5><span class="text-right" id="receivedStatus">@Model.ReceivedStatus</span></h5>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-15 col-lg-6 m-b-20">
+                                                    <div class="invoices-view">
+                                                        <span class="text-muted">Patient:</span>
+                                                        <ul class="list-unstyled invoice-payment-details">
+                                                            <li>
+                                                                <h5><span class="text-right" id="patientName">@Model.PatientName</span></h5><!-- Display patient's name dynamically -->
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <button class="btn btn-info" id="receiveButton" onclick="receiveMedication()">Receive Medication</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Include jQuery library -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Include JavaScript file -->
+<script src="receive_medication.js"></script>
+<script>
+    function receiveMedication() {
+        // Disable the button to prevent multiple clicks
+        $('#receiveButton').prop('disabled', true);
+
+        // Make an AJAX request to notify the server that medication is received
+        $.ajax({
+            url: '@Url.Action("ReceiveMedication", "Nurse")', // Replace with the correct controller action URL
+            type: 'POST',
+            data: { patientId: '@Model.PatientID' }, // Pass the patient ID to the server
+            success: function (data) {
+                if (data.success) {
+                    // Update UI
+                    $('#receivedStatus').text('Received by Nurse');
+                    alert("Medication Received by Nurse");
+                    window.location.href = '/Nurse/ReceivedPrescriptions';
+                } else {
+                    // Display error message
+                    alert('Failed to receive medication. Please try again.');
+                }
+            },
+            error: function () {
+                // Display error message
+                alert('Failed to receive medication. Please try again.');
+            },
+            complete: function () {
+                // Re-enable the button after the request is complete
+                $('#receiveButton').prop('disabled', true);
+            }
+
+        });
+
+    }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

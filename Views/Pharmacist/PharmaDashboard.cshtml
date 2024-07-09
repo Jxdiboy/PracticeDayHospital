@@ -1,0 +1,151 @@
+﻿@{
+    ViewData["Title"] = "DashBoard";
+}
+
+<div class="card card-rounded">
+    <div class="card-body" style="height:120px">
+<div class="col-sm-12">
+    <div class="statistics-details d-flex align-items-center justify-content-between">
+        <div>
+                    <p class="statistics-title" style="font-size:20px">Total Prescriptions</p>
+            <h3 class="rate-percentage">112</h3>
+                    <p class="text-success d-flex"><i class="mdi mdi-book-multiple"></i><span></span></p>
+        </div>
+        <div>
+                    <p class="statistics-title" style="font-size:20px">Pending Prescriptions</p>
+            <h3 class="rate-percentage">36</h3>
+                    <p class="text-success d-flex"><i class="mdi mdi-flattr"></i><span></span></p>
+        </div>
+        <div>
+                    <p class="statistics-title" style="font-size:20px">Dispensed Prescriptions</p>
+            <h3 class="rate-percentage">44</h3>
+                    <p class="text-success d-flex"><i class="mdi mdi-check-all"></i><span></span></p>
+        </div>
+        <div class="d-none d-md-block">
+                    <p class="statistics-title" style="font-size:20px">Rejected Prescriptions</p>
+            <h3 class="rate-percentage">32</h3>
+                    <p class="text-success d-flex"><i class="mdi mdi-close"></i><span></span></p>
+        </div>
+        <div class="d-none d-md-block">
+                    <p class="statistics-title" style="font-size:20px">Total Admitted Patients</p>
+            <h3 class="rate-percentage">120</h3>
+                    <p class="text-success d-flex"><i class="mdi mdi-account-multiple-plus"></i><span></span></p>
+        </div>
+        <div class="d-none d-md-block">
+                    <p class="statistics-title" style="font-size:20px">Total Medication Types</p>
+            <h3 class="rate-percentage">62</h3>
+                    <p class="text-success d-flex"><i class="mdi mdi-ambulance"></i><span></span></p>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+<br/>
+
+<div class="row">
+<div class="col-6 grid-margin stretch-card">
+    <div class="card card-rounded">
+        <div class="card-body">
+            <div class="d-sm-flex justify-content-between align-items-start">
+                <div>
+                    <h1 class="card-title card-title-dash">Pending Prescriptions</h1>
+                    <p class="card-subtitle card-subtitle-dash">You have 30+ new requests</p>
+                </div>
+                <div>
+                    <a asp-action="ActivePres" class="btn btn-primary btn-lg text-white mb-0 me-0" type="button"><i class="mdi mdi-account-search"></i>View All</a>
+                </div>
+            </div>
+            <div class="table-responsive  mt-1">
+                <table class="table select-table">
+                    <thead>
+                        <tr>
+                            <th>Prescription ID</th>
+                            <th>Surgeon Name</th>
+                            <th>Patient ID Number</th>
+                            <th>Priority</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>John</td>
+                            <td>0123456789123</td>
+                            <td><div class="badge badge-pill badge-danger">High</div></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>John</td>
+                            <td>0147258369789</td>
+                            <td><div class="badge badge-pill badge-info">Low</div></td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Henry</td>
+                            <td>0369258147896</td>
+                            <td><div class="badge badge-pill badge-danger">High</div></td>
+                        </tr>
+                       
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="col-6 grid-margin stretch-card">
+    <div class="card card-rounded">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-lg-12">
+                        <div class="d-sm-flex justify-content-between align-items-start">
+                        <div>
+                            <h2 class="card-title card-title-dash">Re-Order Alerts</h2>
+                        </div>
+                        <div>
+                            <a asp-action="ReOrderStockView" class="btn btn-primary btn-lg text-white mb-0 me-0" type="button">Quick Order</a>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+
+                        <div class="wrapper d-flex align-items-center justify-content-between py-2 border-bottom">
+                            <div class="d-flex">
+                                <div class="wrapper ms-3">
+                                        <p class="ms-1 mb-1 fw-bold"><b>Alcougholex</b> re-order level has been reached</p>
+                                    <small class="text-muted mb-0">15 units</small>
+                                </div>
+                            </div>
+                            <div class="text-muted text-small">
+                                18/05/2024
+                            </div>
+                        </div>
+                        <div class="wrapper d-flex align-items-center justify-content-between py-2 border-bottom">
+                            <div class="d-flex">
+                                <div class="wrapper ms-3">
+                                        <p class="ms-1 mb-1 fw-bold"><b>Panado</b> re-order level has been reached</p>
+                                        <small class="text-muted mb-0">10 units</small>
+                                </div>
+                            </div>
+                            <div class="text-muted text-small">
+                                19/05/2024
+                            </div>
+                        </div>
+                        <div class="wrapper d-flex align-items-center justify-content-between py-2 border-bottom">
+                            <div class="d-flex">
+                                <div class="wrapper ms-3">
+                                        <p class="ms-1 mb-1 fw-bold"><b>Pretizone</b> re-order level has been reached</p>
+                                        <small class="text-muted mb-0">20 units</small>
+                                </div>
+                            </div>
+                            <div class="text-muted text-small">
+                                 20/05/2024
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>

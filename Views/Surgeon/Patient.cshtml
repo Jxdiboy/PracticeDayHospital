@@ -1,0 +1,481 @@
+﻿
+@{
+    ViewData["Title"] = "Patient History";
+}
+
+<div class="col-12 grid-margin">
+    <div class="card">
+        <div class="card-body">
+            <div>
+                <h4 class="card-title text-center">Patient History</h4>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-10">
+                    <div class="form-group row" style="display:flex;flex-direction:column;align-items:center">
+                        <h5 class="col-sm-3 col-form-label">Patient ID Number:</h5>
+                        <span class="col-sm-3 form-label text-danger" style="display:none" id="id-error">No Results found</span>
+                        <div class="col-sm-4">
+                            <input id="patientID" placeholder="ID Number" maxlength="13" minlength="13" type="text" autocomplete="off" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2" style="display:flex;justify-content:end;align-items: center;">
+                    <a asp-action="BookAppointment" class="btn btn-primary btn-lg text-white" style="height:min-content"><i class="fa-solid fa-user-plus"></i></i>Add New Patient</a>
+                </div>
+            </div>
+            <br />
+            <div id="data" style="display:none">
+                <div class="row">
+                    <h3 class="text-center">Patient Info</h3>
+                    <div class="col-md-4">
+                        <div class="card mt-3">
+                            <div class="card-body">
+                                @* Allergies *@
+                                <h3 class="card-title text-center">Allergies</h3>
+                                <div style="max-height:334px;overflow-y: auto;">
+                                    <ol style="list-style:none;font-size: large;" id="patient-allergies">
+                                    </ol>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card mt-3">
+                            <div class="card-body">
+                                <div id="patient-info" style="max-height:334px">
+
+                                </div>
+                                
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card mt-3">
+                            <div class="card-body">
+                                @* Latest vitals *@
+                                <h3 class="card-title text-center">Latest Vitals</h3>
+                                <table width="100%" cellpadding="10">
+                                    <tr class="border-bottom">
+                                        <td>Weight</td>
+                                        <td id="weight"></td>
+                                    </tr>
+                                    <tr class="border-bottom">
+                                        <td>Height</td>
+                                        <td id="height"></td>
+                                    </tr>
+
+                                    <tr class="border-bottom">
+                                        <td>Temperature </td>
+                                        <td id="tempe"></td>
+                                    </tr>
+                                    <tr class="border-bottom">
+                                        <td>
+                                            Blood pressure
+                                        </td>
+                                        <td id="bpressure"></td>
+                                    </tr>
+                                    <tr class="border-bottom">
+                                        <td>Heart Rate</td>
+                                        <td id="heartrate"></td>
+                                    </tr>
+                                    <tr class="border-bottom">
+                                        <td>Respiratory Rate</td>
+                                        <td id="resrate"></td>
+                                    </tr>
+                                    <tr class="border-bottom">
+                                        <td>Blood Oxygen</td>
+                                        <td id="bloodoxygen"></td>
+                                    </tr>
+                                    <tr class="border-bottom">
+                                        <td>Blood Glucose Level</td>
+                                        <td id ="bglucose"></td>
+                                    </tr>
+                                </table>
+                                <div class="list align-items-center pt-3">
+                                    <div class="wrapper w-100">
+                                        <p id="v-date"></p>
+                                        <p class="mb-0 text-center">
+                                            <a asp-action="Appointments" class="fw-bold text-primary">Show all <i class="mdi mdi-arrow-right ms-2"></i></a>
+                                        </p>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <br />
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card mt-3">
+                            <div class="card-body">
+                                <h3 class="card-title text-center">Chronic Conditions</h3>
+                                <div style="max-height:334px;overflow-y: auto;">
+                                    <ol style="list-style:none;font-size: large;" id="patient-conditions">
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card mt-3">
+                            <div class="card-body">
+                                <h3 class="card-title text-center">Current Medication</h3>
+                                <div style="max-height:334px;overflow-y: auto;">
+                                    <ol style="list-style:none;font-size: large;" id="patient-medication">
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card mt-3">
+                            <div class="card-body">
+                                <h3 class="card-title text-center">Past Prescriptions</h3>
+                                <div class="table-responsive" style="height:350px;">
+                                    <table class="table table-hover mt-1 display" style="width:100%" id="past-prec">
+                                    @* <table class="table table-hover mt-1" class="" id="past-prec"> *@
+                                        @* https://datatables.net/examples/basic_init/filter_only.html just remove the last 2 scripts and the datatable in the script *@
+
+                                        <thead class="bg-light sticky-top">
+                                            <tr>
+                                                <th>Priority</th>
+                                                <th>Date</th>
+                                                <th>Status</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="prescription-body">
+                                        </tbody>
+
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                     <div class="col-md-6">
+                        <div class="card mt-3">
+                            <div class="card-body">
+                                <h3 class="card-title text-center">Surgeries</h3>
+                                <div class="table-responsive" style="height:300px;">
+                                    <table class="table table-hover mt-1" id="Surgeries-table" style="width:100%">
+                                        <thead class="bg-light sticky-top">
+                                            <tr>
+                                                <th>Theater</th>
+                                                <th>Date</th>
+                                                <th>Time</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="surgeries-body">
+                                        </tbody>
+
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            
+                
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal-center" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Prescription Medicine</h5>
+            </div>
+            <div class="modal-body">
+                <div class="text-center" id="modalbody">
+                    <div class="spinner-border text-primary" id="spinner" role="status"></div><br /><span class="sr-only">Loading...</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @* <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script> *@
+    <script src="https://cdn.datatables.net/2.0.4/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.0.7/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.0.7/js/dataTables.bootstrap5.js"></script>
+    <script>
+        $("#patientID").on('input', function () {
+            if ($('#patientID').val().length == 13) {
+                body = $("#modalbody");
+                body.empty();
+                body.append('<div class="spinner-border text-primary" id="spinner" role="status"></div><br /><span class="sr-only">Loading...</span>');
+                //$('#modal-center').modal('show');
+                data = { Id: $('#patientID').val() }
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("PatientHistory", "Surgeon")",
+                    data: data,
+                    contentType: "application/json",
+                    success: function (response) {
+                        if (response != null) {
+                            if(response.success){
+                                Prescriptions(response.prescription);
+                                Appointments(response.appointments);
+                                Vitals(response.vitals);
+                                Allergies(response.allergies);
+                                PatientInfo(response.patient);
+                                Medication(response.medication);
+                                Conditions(response.condition);
+                                $('#data').show();
+                                $('#modal-center').modal('hide');
+                            }
+                            else{
+                                $('#id-error').show();
+                                $('#data').hide();
+                                $('#modal-center').modal('hide');
+                            }
+
+                        }
+                        else {
+                            $('#id-error').show();
+                            $('#data').hide();
+                            $('#modal-center').modal('hide');
+                        }
+
+                    }
+
+                });
+                $('#id-error').hide();
+            }
+            else {
+            }
+        });
+        function PatientInfo(a){
+            body = $("#patient-info");
+            body.empty();
+            body.append('<p style="font-size: large;line-height: 2; ">' + a.name + '</br>' + a.email + '</br>' + a.gender + '</br>' + a.phoneNumber + '</br>' + a.addressLine1 + '</br>' + a.addressLine2 + '</p>');
+        }
+
+        function Prescriptions(data){
+            
+            var i = $.fn.DataTable.isDataTable('#past-prec');
+            if(i){
+                $('#past-prec').DataTable().destroy();
+
+                var Presctable = $('#past-prec').DataTable({
+                    "columnDefs": [
+                        { "type": "string", "targets": 0 },
+                        { "type": "date", "targets": 1 },
+                        { "type": "string", "targets": 2 },
+                        { "orderable": false, "targets": -1 }
+
+                    ]
+                });
+                Presctable.clear().draw();
+                $.each(data, function (index, item) {
+                    // Format date in desired format (assuming item.date is in YYYY-MM-DD format)
+                    var formattedDate = new Date(item.date).toLocaleDateString('en-ZA', { year: 'numeric', month: 'short', day: 'numeric' });
+                    var l = '<a href="@Url.Action("ViewPrescription")/' + item.prescriptionId + '"><label class="badge badge-primary">View</label></a>'
+                    Presctable.row.add([item.priority, formattedDate, item.status, l]).draw();
+                });
+                return true;
+            }
+            // body = $("#prescription-body");
+            // body.empty();
+            // s = '';
+            // if (a == null || a.length == 0) {
+            //     s = '<tr><td class="text-danger">No Data found.</td></tr>'
+            // }
+            // else {
+            //     for (let i = 0; i < a.length; i++) {
+            //         let obj = a[i];
+            //         s += '<tr><td>' + obj.priority + '</td><td>' + obj.date + '</td><td>' + obj.status + '</td><td><a href="@Url.Action("ViewPrescription")/' + obj.prescriptionId + '"><label class="badge badge-primary">View</label></a></tr></tr>';
+
+            //     }
+            // }
+            
+            //body.append(s);
+            //data = a;
+
+            // new DataTable("#past-prec", {
+            //     info: false,
+            //     ordering: true,
+            //     paging: false,
+            //     "columnDefs": [
+            //         { "type": "string", "targets": 0 },
+            //         { "type": "date", "targets": 1 },
+            //         { "type": "string", "targets": 2 },
+            //         { "type": "string", "targets": 3 },
+
+            //     ]
+
+            // });
+
+            var Presctable = $('#past-prec').DataTable({
+                "columnDefs" : [
+                    {"type" : "string" , "targets": 0},
+                    {"type" : "date" , "targets": 1},
+                    {"type" : "string" , "targets": 2},
+                    { "orderable": false, "targets": -1 }
+
+                ]
+            });
+            Presctable.clear().draw(); // Clear existing data
+            $.each(data, function (index, item) {
+                // Format date in desired format (assuming item.date is in YYYY-MM-DD format)
+                var formattedDate = new Date(item.date).toLocaleDateString('en-ZA', { year: 'numeric', month: 'short', day: 'numeric' });
+                var l = '<a href="@Url.Action("ViewPrescription")/' + item.prescriptionId + '"><label class="badge badge-primary">View</label></a>'
+                Presctable.row.add([item.priority, formattedDate, item.status, l]).draw();
+            });
+        }
+        
+        function Appointments(data){
+            console.log(data);
+            var i = $.fn.DataTable.isDataTable('#Surgeries-table');
+            if (i) {
+                $('#Surgeries-table').DataTable().destroy();
+
+                var Presctable = $('#Surgeries-table').DataTable({
+                    "columnDefs": [
+                        { "type": "string", "targets": 0 },
+                        { "type": "date", "targets": 1 },
+                        { "type": "string", "targets": 2 },
+                        { "orderable": false, "targets": -1 }
+
+                    ]
+                });
+                Presctable.clear().draw();
+                $.each(data, function (index, item) {
+                    // Format date in desired format (assuming item.date is in YYYY-MM-DD format)
+                    var formattedDate = new Date(item.date).toLocaleDateString('en-ZA', { year: 'numeric', month: 'short', day: 'numeric' });
+                    var l = '<a href="@Url.Action("ViewAppointment")/' + item.bookingId + '"><label class="badge badge-primary">View</label></a>'
+                    Presctable.row.add([item.theater, formattedDate, item.time, l]).draw();
+                });
+                return true;
+            }
+            // body = $("#prescription-body");
+            // body.empty();
+            // s = '';
+            // if (a == null || a.length == 0) {
+            //     s = '<tr><td class="text-danger">No Data found.</td></tr>'
+            // }
+            // else {
+            //     for (let i = 0; i < a.length; i++) {
+            //         let obj = a[i];
+            //         s += '<tr><td>' + obj.priority + '</td><td>' + obj.date + '</td><td>' + obj.status + '</td><td><a href="@Url.Action("ViewPrescription")/' + obj.prescriptionId + '"><label class="badge badge-primary">View</label></a></tr></tr>';
+
+            //     }
+            // }
+
+            //body.append(s);
+            //data = a;
+
+            // new DataTable("#past-prec", {
+            //     info: false,
+            //     ordering: true,
+            //     paging: false,
+            //     "columnDefs": [
+            //         { "type": "string", "targets": 0 },
+            //         { "type": "date", "targets": 1 },
+            //         { "type": "string", "targets": 2 },
+            //         { "type": "string", "targets": 3 },
+
+            //     ]
+
+            // });
+
+            var Presctable = $('#Surgeries-table').DataTable({
+                "columnDefs": [
+                    { "type": "string", "targets": 0 },
+                    { "type": "date", "targets": 1 },
+                    { "type": "string", "targets": 2 },
+                    { "orderable": false, "targets": -1 }
+
+                ]
+            });
+            Presctable.clear().draw(); // Clear existing data
+            $.each(data, function (index, item) {
+                // Format date in desired format (assuming item.date is in YYYY-MM-DD format)
+                var formattedDate = new Date(item.date).toLocaleDateString('en-ZA', { year: 'numeric', month: 'short', day: 'numeric' });
+                var l = '<a href="@Url.Action("ViewAppointment")/' + item.bookingId + '"><label class="badge badge-primary">View</label></a>'
+                Presctable.row.add([item.theater, formattedDate, item.time, l]).draw();
+            });
+        }
+        function Vitals(a){
+            if (a == null) {
+                $("#v-date").text('No Data Found.');
+            }
+            else{
+                $("#weight").text(a.weight + ' kg');
+                $("#height").text(a.height + ' cm');
+                $("#tempe").text(a.temperature + ' C°');
+                $("#bpressure").text(a.bloodPressureSystolic + ' / ' + a.bloodPressureDiastolic + ' mm Hg');
+                $("#heartrate").text(a.heartRate + ' BPM');
+                $("#resrate").text(a.resRate + ' BPM');
+                $("#bloodoxygen").text(a.bloodOxygen + ' %');
+                $("#bglucose").text(a.bloodGlucoseLevel + ' mmol/L');
+                let z = new Date(a.date)
+                $("#v-date").text('Date: ' + z.getDate() + '-' + z.getMonth() + '-' + z.getFullYear());
+            }
+            
+        }
+        function Allergies(a){
+            body = $("#patient-allergies");
+            body.empty();
+            s = '';
+            if (a == null || a.length == 0) {
+                s = '<li class="border-bottom m-2 text-danger">No Data Found.</li>'
+            }
+            else {
+                for (let i = 0; i < a.length; i++) {
+                    let x = a[i];
+                    s += '<li class="border-bottom m-2">' + x + '</li>'
+                }
+            }
+            
+            body.append(s);
+        }
+        function Medication(a){
+            body = $("#patient-medication");
+            body.empty();
+            s = '';
+            if (a == null || a.length == 0) {
+                s = '<li class="border-bottom m-2 text-danger">No Data Found.</li>'
+            }
+            else {
+                for (let i = 0; i < a.length; i++) {
+                    let x = a[i];
+                    s += '<li class="border-bottom m-2">' + x + '</li>'
+                }
+            }
+            body.append(s);
+        }
+        function Conditions(a){
+            body = $("#patient-conditions");
+            body.empty();
+            s = '';
+            if (a == null || a.length == 0) {
+                s = '<li class="border-bottom m-2 text-danger">No Data Found.</li>'
+            }
+            else {
+                for (let i = 0; i < a.length; i++) {
+                    let x = a[i];
+                    s += '<li class="border-bottom m-2">' + x + '</li>'
+                }
+            }
+            body.append(s);
+        }
+        
+    </script>
+}
+
+

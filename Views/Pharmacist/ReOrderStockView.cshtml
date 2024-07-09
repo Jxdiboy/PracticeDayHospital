@@ -1,0 +1,72 @@
+﻿@{
+    ViewData["Title"] = "PrescriptionView";
+}
+<div class="card-body">
+    <div class="row" id="" style="justify-content:space-around">
+        <div class="col-10 col-md-6">
+            <div class="card">
+                <div class="card-body " style="height:350px">
+                    <h2 class="card-title text-center" style="font-size:28px">Re-Order Stock View</h2>
+                    <br />
+                    <form>
+                        <div class="row">
+                            <div class="col">
+                                <label style="width:200px;border:none;font-size:20px"><b>Medication Name</b></label>
+                            </div>
+                            <div class="col">
+                                <label style="width:200px;border:none;font-size:20px"><b>Stock On Hand</b></label>
+                            </div>
+                            <div class="col">
+                                <label style="width:200px;border:none;font-size:20px"><b>Order Quantity</b></label>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col">
+                                <input type="text" class="form-control" value="Alcougholex" style="width:200px;border:none;font-size:18px">
+                            </div>
+                            <div class="col">
+                                <input type="text" class="form-control" value="15" style="width:200px;border:none;font-size:18px">
+                            </div>
+                            <div class="col">
+                                <input type="number" class="form-control" placeholder="Quantity (Units)">
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col">
+                                <input type="text" class="form-control" value="Panado" style="width:200px;border:none;font-size:18px">
+                            </div>
+                            <div class="col">
+                                <input type="text" class="form-control" value="10" style="width:200px;border:none;font-size:18px">
+                            </div>
+                            <div class="col">
+                                <input type="number" class="form-control" placeholder="Quantity (Units)">
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col">
+                                <input type="text" class="form-control" value="Pretizone" style="width:200px;border:none;font-size:18px">
+                            </div>
+                            <div class="col">
+                                <input type="text" class="form-control" value="20" style="width:200px;border:none;font-size:18px">
+                            </div>
+                            <div class="col">
+                                <input type="number" class="form-control" placeholder=Quantity (Units)">
+                            </div>
+                        </div>
+                        <br/>
+                        <div class="row" style="display:flex;justify-content: space-around;">
+                            <a asp-action="PharmaDashboard" type="button" class="btn btn-info w-25 text-white" style="font-size:large">Quick Order</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+

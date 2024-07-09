@@ -1,0 +1,141 @@
+﻿@using DayHospital.Models.Pharmacist
+@{
+    ViewData["Title"] = "View Medication";
+}
+<div class="col-12 grid-margin">
+    <div class="card">
+        <div class="card-body">
+<div style="float:right">
+        <a asp-action="AddMedication"  class="btn btn-info" style="color:white;border-radius: 13px;font-size:15px"><i class="fas fa-plus"></i> Add Medication</a>
+</div>
+<div class="card-body" style="height:350px">
+    <div class="col-sm-8 col-6">
+        <h2 class="card-title" style="font-size:30px">Medication Inventory</h2>
+    </div>
+                  <br/>
+                  <div class="table-responsive">
+                    <table class="table table-hover" >
+                      <thead>
+                        <tr >
+                    <th style="font-size:19px"><b>Med ID</b></th>
+                    <th style="font-size:19px"><b>Medicine Name</b></th>
+                    <th style="font-size:19px"><b>Medication Schedule</b></th>@* type of medication schedule,like type 1 is medication you can get over the counter *@
+                    <th style="font-size:19px"><b>Dosage Form</b></th>@* this is the type of medication eg. syrup,tablets,capsules etc....Admin user must maintain list *@
+                    <th style="font-size:19px"><b>Status</b></th>
+                    <th style="font-size:19px"><b>Actions</b></th>
+                        </tr>
+                      </thead>
+                           <tbody >
+                        <tr>
+                    <td style="font-size:14px">1</td>
+                    <td style="font-size:14px">Alcougholex</td>
+                    <td style="font-size:14px">Schedule 1</td>
+                    <td style="font-size:14px">Syrup</td>
+                    <td>
+                         <label class="badge badge-success">Available</label>
+                    </td>
+                            @*  <td class="text-center">
+                            <div class="dropdown action-label">
+                            @if (drug.DrugStatus == "Available")
+                            {
+                            <button class="custom-badge status-green" aria-haspopup="true" aria-expanded="false">
+                            @drug.DrugStatus
+                            </button>
+                            }
+                            else if (drug.DrugStatus == "Unavailable")
+                            {
+                            <button class="custom-badge status-orange" aria-haspopup="true" aria-expanded="false">
+                            @drug.DrugStatus
+                            </button>
+                            }
+
+                            </div>
+                            </td> *@
+                            <td class="text-right">
+                                    <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuIconButton1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-bottom:0px;height:30px">
+                                        <i class="mdi mdi-arrow-expand-all"></i>
+                                    </button>
+                                    <div class="dropdown-menu" style="">
+                                        <a class="dropdown-item" onclick="ShowModal()" >More info</a>
+                                        <a class="dropdown-item" href="EditMedication">Edit Record</a>
+                                        <a class="dropdown-item" >Delete Record</a>
+                                    </div>
+                            </td>
+                        </tr>
+                            <tr>
+                                <td style="font-size:14px">2</td>
+                                <td style="font-size:14px">Broncough</td>
+                                <td style="font-size:14px">Schedule 2</td>
+                                <td style="font-size:14px">Syrup</td>
+                                <td>
+                                    <label class="badge badge-danger">Unavailable</label>
+                                </td>
+                                <td class="text-right">
+                                    <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuIconButton1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-bottom:0px;height:30px">
+                                        <i class="mdi mdi-arrow-expand-all"></i>
+                                    </button>
+                                    <div class="dropdown-menu" style="">
+                                        <a class="dropdown-item" onclick="ShowModal()">More info</a>
+                                        <a class="dropdown-item" href="#">Edit Record</a>
+                                        <a class="dropdown-item">Delete Record</a>
+                                    </div>
+                                </td>
+                            </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                </div>
+    </div>
+</div>
+<div class="modal fade" id="Info" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="exampleModalLongTitle">Alcougholex:</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h3 class="text text-center">Active Ingredients</h3>
+                <ol>
+                    <li>Act Ingr 1 <span class="space"></span> 5 mg</li>
+                    <li>Act Ingr 2 <span class="space"></span> 3 mg</li>
+                </ol>
+                <br/>
+                <h3 class="text text-center">Usage Indication</h3>
+                <ol>
+                    <li>Headache</li>
+                    <li>Sore Throat</li>
+                    <li>Body Ache</li>
+                    <li>Fever</li>
+                    <li>Chest Pains</li>
+                    <li>Inflamation</li>
+                    <li>Heart Burn</li>
+                </ol>
+                <br/>
+                <h3 class="text text-center">Re-Order Level</h3>
+                <p><b>20 Units</b></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="HideModal()" style="color:white;width:80px">Close</button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    function ShowModal() {
+
+        $("#Info").modal('show');
+    }
+    function HideModal() {
+
+        $("#Info").modal('hide');
+    }
+</script>
+<style>
+    .space{ margin-right:100px; }
+</style>

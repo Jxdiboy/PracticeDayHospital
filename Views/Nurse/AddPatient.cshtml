@@ -1,0 +1,164 @@
+﻿@{
+    ViewData["Title"] = "New Patient";
+}
+
+<div class="col-12 grid-margin">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Add New Patient</h4>
+            @* <p class="card-description">
+            Basic form elements
+            </p> *@
+            <form class="forms-sample">
+                <div class="form-group">
+                    <label for="InputID">Patient ID Number:</label>
+                    <input pattern="[0-9]{13}" class="form-control" id="InputID" placeholder="ID Number" required>
+                </div>
+                <div class="form-group">
+                    <label for="InputName1">Name:</label>
+                    <input type="text" class="form-control" id="InputName1" placeholder="Name" required>
+                </div>
+                <div class="form-group">
+                    <label for="InputSurname">Surname:</label>
+                    <input type="text" class="form-control" id="InputSurname" placeholder="Surname" required>
+                </div>
+                <div class="form-group">
+                    <label for="InputContactNumber">Contact Number:</label>
+                    <input pattern="[0-9]{10}" class="form-control" id="InputContactNumber" placeholder="Contact Number" required>
+                </div>
+                <div class="form-group">
+                    <label for="InputEmail">Email address:</label>
+                    <input type="email" class="form-control" id="InputEmail" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <label for="InputDOB">Date Of Birth:</label>
+                    <input type="date" max="3000-01-01" onfocus="this.max=new Date().toISOString().split('T')[0]" class="form-control" id="InputDOB" placeholder="DOB" / required>
+                </div>
+                <div class="form-group">
+                    <label for="SelectGender">Gender</label>
+                    <select class="form-control" id="SelectGender" required>
+                        <option>Male</option>
+                        <option>Female</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="InputADT">Admission Date and Time </label>
+                    <input type="datetime-local" class="form-control" id="InputADT" placeholder="Admission Date and Time" required>
+                </div>
+                @{
+                    // Get today's date and time in C#
+                    var today = DateTime.Now;
+
+                    // Format today's date and time as yyyy-MM-ddTHH:mm (required format for datetime-local input)
+                    var formattedDateTime = today.ToString("yyyy-MM-ddTHH:mm");
+                }
+
+                <script>
+                    // Set minimum and maximum values for the input field using JavaScript
+                    var admissionDateTimeInput = document.getElementById('InputADT');
+                    admissionDateTimeInput.setAttribute('min', '@formattedDateTime');
+                    admissionDateTimeInput.setAttribute('max', '@formattedDateTime');
+                </script>
+
+                <div class="form-group">
+                    <label class="col-form-label">Address Line 1:</label>
+                    <input type="text" class="form-control" id="new-pat-ad1" name="AddressLine1" required>
+                </div>
+                <div class="form-group">
+                    <label class="col-form-label">Province:</label>
+                    <select class="form-select" id="pat-province" name="Province" required>
+                        <option value="">Select Province</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="col-form-label">City:</label>
+                    <select class="form-select" id="pat-city" name="City" required>
+                        <option value="">Select City</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="col-form-label">Suburb:</label>
+                    <select class="form-select" id="pat-suburb" name="Suburb" required>
+                        <option value="">Select Suburb</option>
+                    </select>
+                </div>
+                @*       <a href="@Url.Action("ViewPatientHistory","Nurse")" class="btn btn-primary me-2">Submit</a>
+                <a href="@Url.Action("ViewPatientHistory","Nurse")" class="btn btn-light">Cancel</a> *@
+                <button type="submit" class="btn btn-primary me-2" onclick="window.location.href='@Url.Action("CapturePatientInfo","Nurse")'">Submit</button>
+                <button class="btn btn-light" onclick="window.location.href = '@Url.Action("ViewPatientHistory","Nurse")'">Cancel</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Populate provinces
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("GetProvince")",
+            dataType: "json",
+            success: function (result) {
+                var options = '<option value="">Select Province</option>';
+                for (var i = 0; i < result.length; i++) {
+                    options += '<option value="' + result[i].id + '">' + result[i].name + '</option>';
+                }
+                $('#pat-province').html(options);
+            },
+            error: function () {
+                alert("Failed to load provinces.");
+            }
+        });
+
+        // Populate cities based on selected province
+        $('#pat-province').change(function () {
+            var provinceId = $(this).val();
+            if (provinceId) {
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("GetCity")",
+                    data: { id: provinceId },
+                    dataType: "json",
+                    success: function (result) {
+                        var options = '<option value="">Select City</option>';
+                        for (var i = 0; i < result.length; i++) {
+                            options += '<option value="' + result[i].id + '">' + result[i].name + '</option>';
+                        }
+                        $('#pat-city').html(options);
+                    },
+                    error: function () {
+                        alert("Failed to load cities.");
+                    }
+                });
+            } else {
+                $('#pat-city').html('<option value="">Select City</option>');
+            }
+            $('#pat-suburb').html('<option value="">Select Suburb</option>');
+        });
+
+        // Populate suburbs based on selected city
+        $('#pat-city').change(function () {
+            var cityId = $(this).val();
+            if (cityId) {
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("GetSuburb")",
+                    data: { id: cityId },
+                    dataType: "json",
+                    success: function (result) {
+                        var options = '<option value="">Select Suburb</option>';
+                        for (var i = 0; i < result.length; i++) {
+                            options += '<option value="' + result[i].id + '">' + result[i].name + '</option>';
+                        }
+                        $('#pat-suburb').html(options);
+                    },
+                    error: function () {
+                        alert("Failed to load suburbs.");
+                    }
+                });
+            } else {
+                $('#pat-suburb').html('<option value="">Select Suburb</option>');
+            }
+        });
+    });
+</script>

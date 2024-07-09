@@ -1,0 +1,52 @@
+﻿@{
+    ViewData["Title"] = "Received Prescriptions";
+}
+
+<h2 class="text-center">Received Prescriptions</h2>
+<div class="main-wrapper">
+    <div class="page-wrapper">
+        <div class="content">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Prescription ID</th>
+                                        <th>Patient Name</th>
+                                        <th>Ward</th>
+                                        <th>Bed</th>
+                                        <th>View Prescription</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var receivedPrescription in Model)
+                                    {
+                                        <tr>
+                                            <td>@receivedPrescription.PrescriptionId</td>
+                                            <td>@receivedPrescription.PatientName</td>
+                                            <td>@receivedPrescription.Ward</td>
+                                            <td>@receivedPrescription.Bed</td>
+                                            <td>
+                                                <button class="btn btn-info" onclick="viewPrescription(@receivedPrescription.PrescriptionId)">View Prescription</button>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function viewPrescription(prescriptionId) {
+        // Implement logic to view full prescription details here
+        // For demonstration purposes, you can navigate to a new page with the prescription details
+        window.location.href = '/Nurse/PrescriptionDetails?prescriptionId=' + prescriptionId;
+    }
+</script>

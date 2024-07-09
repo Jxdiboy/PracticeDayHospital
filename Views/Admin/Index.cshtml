@@ -1,0 +1,21 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+@if (@TempData["error"] != null)
+{
+    <div class="row justify-content-center">
+        <div class="alert alert-danger w-50 text-center">
+            <p style="font-size:x-large">@TempData["error"]</p>
+        </div>
+    </div>
+}
+@if (@TempData["pass"] != null)
+{
+    <div class="row justify-content-center">
+        <div class="alert alert-success w-50 text-center">
+            <p style="font-size:x-large">@TempData["pass"]</p>
+        </div>
+    </div>
+}
+

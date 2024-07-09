@@ -1,0 +1,161 @@
+﻿@{
+    ViewData["Title"] = "ActivePrescriptions";
+}
+<h2 class="text-center">Prescription View</h2>
+<div class="col-12 grid-margin">
+    <div class="card">
+
+        <div class="card-body">
+            <div class="d-sm-flex justify-content-between align-items-start">
+                <div>
+                    <h2 class="card-title card-title-dash">Active Prescriptions</h2>
+                </div>
+                <div>
+                    <input class="form-control" id="patientID" maxlength="13" placeholder="ID Number" autocomplete="off" />
+                </div>
+            </div>
+            <div class="table-responsive" >
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Surgeon Details</th>
+                            <th>Patient ID Number</th>
+                            <th>Date</th>
+                            <th>Priority</th>
+                            <th>View History</th>
+                            <th>View Medication</th>
+                            <th></th>
+                            <th></th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="background-color:#ffcccb">
+                            <td>John Doe</td>
+                            <td>0123456789123</td>
+                            <td>12/02/2024</td>
+                            <td>High</td>
+                            <td>
+                                <a asp-action="PatientHistory" class="btn btn-outline-dark " type="button" style="margin-bottom:0px;height:30px">
+                                    <i class="mdi mdi-account-multiple-plus"></i>
+                                </a>
+                            </td>
+                            <td><button type="button" class="btn btn-info" onclick="ShowModal()" style="color:white;margin-bottom:0px">Medication</button></td>
+                            <td><button type="button" class="badge badge-success" style="background-color:white">Dispense</button></td>
+                            <td><button type="button" class="badge badge-danger" onclick="ShowReason()" style=" background-color:white">Reject</button></td>
+                        </tr>
+                        <tr>
+                            <td>Joe Smith</td>
+                            <td>0236547896542</td>
+                            <td>17/02/2024</td>
+                            <td>Low</td>
+                            <td>
+                                <a asp-action="PatientHistory" class="btn btn-outline-dark " type="button" style="margin-bottom:0px;height:30px">
+                                    <i class="mdi mdi-account-multiple-plus"></i>
+                                </a>
+                            </td>
+                            <td><button type="button" class="btn btn-info" onclick="ShowModal()" style="color:white;margin-bottom:0px">Medication</button></td>
+                            <td><button type="button" class="badge badge-success" style="background-color:white">Dispense</button></td>
+                            <td><button type="button" class="badge badge-danger" onclick="ShowReason()" style="background-color:white">Reject</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="Meds" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="exampleModalLongTitle">Medication Includes: </h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col"><b>#</b></th>
+                            <th scope="col"><b>Medication</b></th>
+                            <th scope="col"><b>Quantity</b></th>
+                            <th scope="col"><b>Instruction</b></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">1</th>
+                            <td>Panado</td>
+                            <td>x1 box</td>
+                            <td>(2) two times a day</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">2</th>
+                            <td>Alcougholex</td>
+                            <td>x1 bottle</td>
+                            <td>(2) three times a day</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">3</th>
+                            <td>Pretizones</td>
+                            <td>x24 tablets</td>
+                            <td>(3) two times a day</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="HideModal()" style="color:white">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="Reason" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="exampleModalLongTitle">Reason for prescription Rejection: </h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label" style="font-size:20px">Valid Reason</label>
+                        <textarea class="form-control" id="message-text" style="height:70px"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" onclick="HideReason()" style="color:white">Close</button>
+                <button type="button" class="btn btn-primary" onclick="HideReason()" style="color:white">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function ShowModal() {
+
+        $("#Meds").modal('show');
+    }
+    function HideModal() {
+
+        $("#Meds").modal('hide');
+    }
+    function HideReason() {
+
+        $("#Reason").modal('hide');
+    }
+    function ShowReason() {
+
+        $("#Reason").modal('show');
+    }
+</script>

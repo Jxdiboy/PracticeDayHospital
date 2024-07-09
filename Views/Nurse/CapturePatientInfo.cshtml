@@ -1,0 +1,298 @@
+﻿@{
+    ViewData["Title"] = "CapturePatientInfo";
+}
+<style>
+    .save-button {
+        background-color: #28a745;
+        color: #fff;
+        border: none;
+        padding: 2px 4px;
+        border-radius: 2px;
+        cursor: pointer;
+    }
+
+    .done-button {
+        background-color: blue;
+        color: #fff;
+        border: none;
+        padding: 4px 8px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .back-button {
+        background-color: lightgray;
+        color: #fff;
+        border: none;
+        padding: 4px 8px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+
+    .form-container {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        max-width: 600px;
+        margin:auto;
+    }
+
+    h1 {
+        text-align: center;
+        color: #333;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #555;
+    }
+
+    input, select, button {
+        width: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        margin-bottom: 10px;
+    }
+
+        input:focus, select:focus, button:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+    .form-section {
+        background: #f9f9f9;
+        padding: 10px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+    }
+
+    .dynamic-field {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+        .dynamic-field select, .dynamic-field input {
+            margin-right: 10px;
+            flex-grow: 1;
+        }
+
+        .dynamic-field button {
+            width: auto;
+            padding: 8px 12px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+            .dynamic-field button:hover {
+                background: #c82333;
+            }
+
+    .add-button {
+        width: auto;
+        padding: 10px 20px;
+        background: #28a745;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        display: inline-block;
+    }
+
+        .add-button:hover {
+            background: #218838;
+        }
+
+    button[type="submit"] {
+        width: 100%;
+        padding: 10px;
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+        button[type="submit"]:hover {
+            background: #0056b3;
+        }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+        .section-header h3 {
+            margin: 0;
+        }
+
+        .section-header button {
+            width: auto;
+            padding: 6px 12px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+            .section-header button:hover {
+                background: #218838;
+            }
+</style>
+<body>
+        <div class="form-container">
+            <h3 style="text-align:center">Patient Information</h3>
+            <br />
+            <form id="patientForm">
+                <div class="form-group">
+                    <label for="patientHeight">Height (cm):</label>
+                    <input type="number" id="patientHeight" name="patientHeight" required>
+                </div>
+                <div class="form-group">
+                    <label for="patientWeight">Weight (kg):</label>
+                    <input type="number" id="patientWeight" name="patientWeight" required>
+                </div>
+                <div class="form-section" id="vitals">
+                    <div class="section-header">
+                        <h3>Vitals</h3>
+                        <button type="button" onclick="addVitalField()">Add Vital</button>
+                    </div>
+                </div>
+                <div class="form-section" id="allergies">
+                    <div class="section-header">
+                        <h3>Allergies</h3>
+                        <button type="button" onclick="addAllergyField()">Add Allergy</button>
+                    </div>
+                </div>
+                <div class="form-section" id="medicalConditions">
+                    <div class="section-header">
+                        <h3>Medical Conditions</h3>
+                        <button type="button" onclick="addConditionField()">Add Medical Condition</button>
+                    </div>
+                </div>
+                <div class="form-section" id="currentMedications">
+                    <div class="section-header">
+                        <h3>Current Medications</h3>
+                        <button type="button" onclick="addMedicationField()">Add Current Medication</button>
+                    </div>
+                </div>
+                <button style="width:min-content;color:white" class="btn btn-primary me-2" type="submit">Submit</button>
+                <a href="@Url.Action("Index","Nurse")" class="btn btn-light">Cancel</a>
+            </form>
+        </div>
+</body>
+<script>
+    const allergyOptions = ['Peanuts', 'Shellfish', 'Pollen', 'Dust', 'Latex'];
+    const conditionOptions = ['Diabetes', 'Hypertension', 'Asthma', 'Cancer', 'Heart Disease'];
+    const medicationOptions = ['Insulin', 'Aspirin', 'Lisinopril', 'Metformin', 'Ibuprofen'];
+    const vitalOptions = [
+        'Blood Pressure (Systolic/Diastolic)',
+        'Heart Rate (bpm)',
+        'Respiratory Rate (breaths/min)',
+        'Temperature (°C)',
+        'Blood Oxygen (%)',
+        'Blood Glucose Level(mg/dL)'
+    ];
+
+    function createOptionField(sectionId, options, name) {
+        const section = document.getElementById(sectionId);
+        const div = document.createElement('div');
+        div.classList.add('dynamic-field');
+        let selectHtml = `<select name="${name}[]" required>`;
+        options.forEach(option => {
+            selectHtml += `<option value="${option}">${option}</option>`;
+        });
+        selectHtml += '</select>';
+        div.innerHTML = `${selectHtml} <button type="button" onclick="removeField(this)">Remove</button>`;
+        section.appendChild(div);
+    }
+
+    function addVitalField() {
+        const section = document.getElementById('vitals');
+        const div = document.createElement('div');
+        div.classList.add('dynamic-field');
+        let selectHtml = `<select name="vitals[]" required onchange="addVitalInputFields(this)">`;
+        vitalOptions.forEach(option => {
+            selectHtml += `<option value="${option}">${option}</option>`;
+        });
+        selectHtml += '</select>';
+        div.innerHTML = `${selectHtml} <div class="vital-values"></div> <button type="button" onclick="removeField(this)">Remove</button>`;
+        section.appendChild(div);
+    }
+
+    function addVitalInputFields(select) {
+        const vitalValueDiv = select.nextElementSibling;
+        const selectedVital = select.value;
+        vitalValueDiv.innerHTML = '';
+
+        if (selectedVital === 'Blood Pressure (Systolic/Diastolic)') {
+            vitalValueDiv.innerHTML = `
+                                <input type="number" name="vitalSystolic[]" placeholder="Systolic" required>
+                                <input type="number" name="vitalDiastolic[]" placeholder="Diastolic" required>
+                            `;
+        } else if (selectedVital === 'Heart Rate (bpm)') {
+            vitalValueDiv.innerHTML = `<input type="number" name="vitalHeartRate[]" placeholder="Heart Rate" required>`;
+        } else if (selectedVital === 'Respiratory Rate (breaths/min)') {
+            vitalValueDiv.innerHTML = `<input type="number" name="vitalRespiratoryRate[]" placeholder="Respiratory Rate" required>`;
+        } else if (selectedVital === 'Temperature (°C)') {
+            vitalValueDiv.innerHTML = `<input type="number" name="vitalTemperature[]" placeholder="Temperature" required>`;
+        } else if (selectedVital === 'Blood Oxygen (%)') {
+            vitalValueDiv.innerHTML = `<input type="number" name="vitalBloodOxygen[]" placeholder="Blood Oxygen" required>`;
+        } else if (selectedVital === 'Blood Glucose Level(mg/dL)') {
+            vitalValueDiv.innerHTML = `<input type="number" name="vitalBloodGlucoseLevel[]" placeholder="Blood Glucose Level" required>`;
+        }
+    }
+
+    function addAllergyField() {
+        createOptionField('allergies', allergyOptions, 'allergies');
+    }
+
+    function addConditionField() {
+        createOptionField('medicalConditions', conditionOptions, 'medicalConditions');
+    }
+
+    function addMedicationField() {
+        createOptionField('currentMedications', medicationOptions, 'currentMedications');
+    }
+
+    function removeField(button) {
+        const fieldDiv = button.parentElement;
+        fieldDiv.remove();
+    }
+
+    document.getElementById('patientForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        const formData = new FormData(this);
+        const data = {};
+        formData.forEach((value, key) => {
+            if (!data[key]) {
+                data[key] = [];
+            }
+            data[key].push(value);
+        });
+        console.log('Form Data Submitted:', data);
+        window.location.href = '/Nurse/ViewAdmittedPatients'
+    });
+</script>
+
+
+
+
+

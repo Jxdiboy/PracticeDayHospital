@@ -1,0 +1,220 @@
+﻿@{
+    ViewData["Title"] = "ViewPatients";
+}
+<style>
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    .success-message {
+        display: none;
+        color: green;
+        text-align: center;
+    }
+
+    #dischargeButton {
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 10px 20px;
+        cursor: pointer;
+        margin-top: 10px;
+        width: 100%;
+    }
+
+        #dischargeButton:hover {
+            background-color: #218838;
+        }
+
+</style>
+<div class="content-wrapper">
+    <div class="page-header">
+        <h3 class="page-title">Admitted Patients </h3>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-12">
+                    <div class="table-responsive">
+                        <div id="order-listing_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
+                            <div class="row"><div class="col-sm-12 col-md-6"><div class="dataTables_length" id="order-listing_length"><label>Show <select name="order-listing_length" aria-controls="order-listing" class="custom-select custom-select-sm form-control"><option value="5">5</option><option value="10">10</option><option value="15">15</option><option value="-1">All</option></select> entries</label></div></div><div class="col-sm-12 col-md-6"><div id="order-listing_filter" class="dataTables_filter"><label><input type="search" class="form-control" placeholder="Search" aria-controls="order-listing"></label></div></div></div><div class="row">
+                                <div class="col-sm-12">
+                                    <table id="order-listing" class="table dataTable no-footer" aria-describedby="order-listing_info">
+                                        <thead>
+                                            <tr>
+                                                <th>Patient ID</th>
+                                                <th>Name</th>
+                                                <th>Surgeon</th>
+                                                <th>Ward</th>
+                                                <th>Bed</th>
+                                                <th>Treatment Code</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            <tr class="odd">
+                                                <td class="sorting_1">1</td>
+                                                <td>Jade</td>
+                                                <td>Dr.Banda</td>
+                                                <td>Ward 1</td>
+                                                <td>Bed 20</td>
+                                                <td>ABC123</td>
+                                                <td>
+                                                    <label class="badge badge-info">Admitted</label>
+                                                </td>
+                                                <td>
+                                                    <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#patientModal">
+                                                        View
+                                                    </button>
+                                                    <button class="btn btn-outline-primary" onclick="window.location.href='@Url.Action("RecaptureVitals","Nurse")'">Vitals</button>
+                                                    <button class="btn btn-outline-primary" onclick="window.location.href='@Url.Action("PrescriptionDetails","Nurse")'">Administer</button>
+                                                    <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#dischargeModal">
+                                                        Discharge
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr class="even">
+                                                <td class="sorting_1">3</td>
+                                                <td>Sam</td>
+                                                <td>Dr.Banda</td>
+                                                <td>Ward 2</td>
+                                                <td>Bed 10</td>
+                                                <td>ABC123</td>
+                                                <td>
+                                                    <label class="badge badge-info">Admitted</label>
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-outline-primary">View</button>
+                                                    <button class="btn btn-outline-primary" onclick="window.location.href='@Url.Action("RecaptureVitals","Nurse")'">Vitals</button>
+                                                    <button class="btn btn-outline-primary" onclick="window.location.href='@Url.Action("PrescriptionDetails","Nurse")'">Administer</button>
+                                                    <button class="btn btn-outline-primary">Discharge</button>
+                                                </td>
+                                            </tr>
+
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div><div class="row"><div class="col-sm-12 col-md-5"><div class="dataTables_info" id="order-listing_info" role="status" aria-live="polite">Showing 1 to 2 of 2 entries</div></div><div class="col-sm-12 col-md-7"><div class="dataTables_paginate paging_simple_numbers" id="order-listing_paginate"><ul class="pagination"><li class="paginate_button page-item previous disabled" id="order-listing_previous"><a aria-controls="order-listing" aria-disabled="true" role="link" data-dt-idx="previous" tabindex="-1" class="page-link">Previous</a></li><li class="paginate_button page-item active"><a href="#" aria-controls="order-listing" role="link" aria-current="page" data-dt-idx="0" tabindex="0" class="page-link">1</a></li><li class="paginate_button page-item next disabled" id="order-listing_next"><a aria-controls="order-listing" aria-disabled="true" role="link" data-dt-idx="next" tabindex="-1" class="page-link">Next</a></li></ul></div></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="patientModal" tabindex="-1" role="dialog" aria-labelledby="patientModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="patientModalLabel">Patient Information</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="patientInfo">
+                    <!-- Placeholder for patient information -->
+                </div>
+                <br />
+                <div>
+                    <h5 style="font:bold">Last Medication Administered</h5>
+                    <ul>
+                        <li>Time: 2024-05-18 10:00 AM</li>
+                        <li>Medication: Alcophyllex </li>
+                        <li>Quantity: 10ml(2 Teaspoons)</li>
+                    </ul>
+                    <ul>
+                        <li>Time: 2024-05-18 10:00 AM</li>
+                        <li>Medication: Panado</li>
+                        <li>Quantity: 2 tablets</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="dischargeModal" tabindex="-1" role="dialog" aria-labelledby="patientModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="patientModalLabel">Discharge Patient</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h2>Add Note</h2>
+                <form id="noteForm">
+                    <textarea id="note" placeholder="Enter your note here..." rows="4" cols="40"></textarea>
+                    <button type="button" id="dischargeButton" onclick="dischargePatient()">Discharge</button>
+                </form>
+                <p class="success-message" id="successMessage">Patient successfully Discharged</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+@* <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script> *@
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    var modal = document.getElementById("dischargeModal");
+    var successMessage = document.getElementById("successMessage");
+    function closeModal() {
+        modal.style.display = "none";
+    }
+    function dischargePatient() {
+        // Here you can handle the discharge process
+        // For now, just showing a pop-up message
+        alert("Patient successfully discharged!");
+        window.location.href = '/Nurse/ViewAdmittedPatients'// Close the modal after discharge
+    }
+
+    function populatePatientInfo() {
+        const user = {
+            Name: "Jade Appels",
+            TreatmentCode: "ABC123",
+            TreatmentCodeDesc: "Removal of Wisdom Teeth",
+            Surgeon: "Dr.Banda",
+            IDNumber: "0109105229081",
+            Allergies: ["Peanuts", "Dust"], // Change to an array
+            MedicalConditions: ["Diabetes"], // Change to an array
+            CurrentMedications: ["Insulin"] // Change to an array
+        };
+
+        // Populate modal with user information
+        document.getElementById('patientInfo').innerHTML = `
+            <p><strong>ID Number:</strong> ${user.IDNumber}</p>
+            <p><strong>Name:</strong> ${user.Name}</p>
+            <p><strong>Treatment Code:</strong> ${user.TreatmentCode}</p>
+            <p><strong>TC Description:</strong> ${user.TreatmentCodeDesc}</p>
+            <p><strong>Name Of Surgeon:</strong> ${user.Surgeon}</p>
+            <p><strong>Allergies:</strong> ${user.Allergies.join(", ")} <button class="btn btn-sm btn-primary" onclick="editInfo('allergies')">Edit</button></p>
+            <p><strong>Medical Conditions:</strong> ${user.MedicalConditions.join(", ")} <button class="btn btn-sm btn-primary" onclick="editInfo('medicalConditions')">Edit</button></p>
+            <p><strong>Current Medication:</strong> ${user.CurrentMedications.join(", ")} <button class="btn btn-sm btn-primary" onclick="editInfo('currentMedications')">Edit</button></p>
+        `;
+    }
+    function editInfo(type) {
+        window.location.href = `/Nurse/EditPatient?type=${type}`
+    }
+    // Event listener for button click to populate modal with patient information
+    document.querySelector('.btn-outline-primary').addEventListener('click', populatePatientInfo);
+
+</script>

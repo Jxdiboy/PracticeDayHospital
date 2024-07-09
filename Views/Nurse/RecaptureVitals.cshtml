@@ -1,0 +1,332 @@
+﻿@model List<PatientUser>
+@{
+    ViewData["Title"] = "Recapture Vitals";
+}
+
+<style>
+    .card-container {
+        display: flex;
+        justify-content: space-between;
+        margin: 20px;
+    }
+
+    .card {
+        width: 48%;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    .patient-info {
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+
+        .patient-info span {
+            font-weight: bold;
+        }
+    /* Style for the save button */
+    .save-button {
+        background-color: orangered;
+        color: #fff;
+        border: none;
+        padding: 3px 6px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .add-button {
+        width: auto;
+        padding: 10px 20px;
+        background-color: green;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        display: inline-block;
+    }
+
+    /* Hide the input fields initially */
+    .editable {
+        display: none;
+    }
+
+    .editing .editable {
+        display: block;
+    }
+
+    .editing .non-editable {
+        display: none;
+    }
+
+    .dynamic-field {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+        .dynamic-field select, .dynamic-field input {
+            margin-right: 10px;
+            flex-grow: 1;
+        }
+
+        .dynamic-field button {
+            width: auto;
+            padding: 8px 12px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+            .dynamic-field button:hover {
+                background: #c82333;
+            }
+
+    .add-button {
+        width: auto;
+        padding: 10px 20px;
+        background: #28a745;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        display: inline-block;
+    }
+
+        .add-button:hover {
+            background: #218838;
+        }
+
+    button[type="submit"] {
+        width: 100%;
+        padding: 10px;
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+        button[type="submit"]:hover {
+            background: #0056b3;
+        }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+        .section-header h3 {
+            margin: 0;
+        }
+
+        .section-header button {
+            width: auto;
+            padding: 6px 12px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+            .section-header button:hover {
+                background: #218838;
+            }
+</style>
+
+<body>
+    <div class="col-12 grid-margin">
+        @if (!string.IsNullOrEmpty(ViewBag.Message))
+        {
+            <div class="alert alert-success">
+                @ViewBag.Message
+            </div>
+        }
+        @foreach (var patient in Model)
+        {
+            <div class="card-container">
+                <div class="card">
+                    <h4 class="card-title">Patient Info</h4>
+                    <div class="patient-info non-editable">
+                        <span>ID Number:</span> @patient.IDNumber
+                    </div>
+                    <div class="patient-info non-editable">
+                        <span>Name:</span> @patient.Name
+                    </div>
+                    <div class="patient-info non-editable">
+                        <span>Email:</span> @patient.Email
+                    </div>
+                    <div class="patient-info non-editable">
+                        <span>Gender:</span> @patient.Gender
+                    </div>
+                    <div class="patient-info non-editable">
+                        <span>Phone Number:</span> @patient.PhoneNumber
+                    </div>
+                    <div class="patient-info non-editable">
+                        <span>Address:</span> @patient.AddressLine1
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div class="card-container">
+            <div class="card">
+                <form id="patientForm">
+                    <div class="form-section" id="vitals">
+                        <div class="section-header">
+                            <h3>Vitals</h3>
+                            <button type="button" onclick="addVitalField()">Add Vital</button>
+                        </div>
+
+                    </div>
+                    <br />
+                    <br />
+                    <button type="button" onclick="previewEmail()" class="save-button">Preview Email</button>
+                    <br />
+                    <br />
+                    <a href="@Url.Action("ViewAdmittedPatients","Nurse")" class="btn btn-light" style="width:95px">Cancel</a>
+                </form>
+            </div>
+            <div class="card">
+                <h4 class="card-title">Latest Vitals Chart</h4>
+                <div class="card-body">
+                    <canvas id="vitalsChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+<!-- JavaScript to handle sending email and redirection -->
+<script>
+    const vitalOptions = [
+        'Blood Pressure (Systolic/Diastolic)',
+        'Heart Rate (bpm)',
+        'Respiratory Rate (breaths/min)',
+        'Temperature (°C)',
+        'Blood Oxygen (%)',
+        'Blood Glucose Level(mg/dL)'
+    ];
+    function createOptionField(sectionId, options, name) {
+        const section = document.getElementById(sectionId);
+        const div = document.createElement('div');
+        div.classList.add('dynamic-field');
+        let selectHtml = `<select name="${name}[]" required>`;
+        options.forEach(option => {
+            selectHtml += `<option value="${option}">${option}</option>`;
+        });
+        selectHtml += '</select>';
+        div.innerHTML = `${selectHtml} <button type="button" onclick="removeField(this)">Remove</button>`;
+        section.appendChild(div);
+    }
+    function addVitalField() {
+        const section = document.getElementById('vitals');
+        const div = document.createElement('div');
+        div.classList.add('dynamic-field');
+        let selectHtml = `<select name="vitals[]" required onchange="addVitalInputFields(this)">`;
+        vitalOptions.forEach(option => {
+            selectHtml += `<option value="${option}">${option}</option>`;
+        });
+        selectHtml += '</select>';
+        div.innerHTML = `${selectHtml} <div class="vital-values"></div> <button type="button" onclick="removeField(this)">Remove</button>`;
+        section.appendChild(div);
+    }
+    function addVitalInputFields(select) {
+        const vitalValueDiv = select.nextElementSibling;
+        const selectedVital = select.value;
+        vitalValueDiv.innerHTML = '';
+
+        if (selectedVital === 'Blood Pressure (Systolic/Diastolic)') {
+            vitalValueDiv.innerHTML = `
+                                                                                    <input type="number" name="vitalSystolic[]" placeholder="Systolic" required>
+                                                                                    <input type="number" name="vitalDiastolic[]" placeholder="Diastolic" required>
+                                                                                `;
+        } else if (selectedVital === 'Heart Rate (bpm)') {
+            vitalValueDiv.innerHTML = `<input type="number" name="vitalHeartRate[]" placeholder="Heart Rate" required>`;
+        } else if (selectedVital === 'Respiratory Rate (breaths/min)') {
+            vitalValueDiv.innerHTML = `<input type="number" name="vitalRespiratoryRate[]" placeholder="Respiratory Rate" required>`;
+        } else if (selectedVital === 'Temperature (°C)') {
+            vitalValueDiv.innerHTML = `<input type="number" name="vitalTemperature[]" placeholder="Temperature" required>`;
+        } else if (selectedVital === 'Blood Oxygen (%)') {
+            vitalValueDiv.innerHTML = `<input type="number" name="vitalBloodOxygen[]" placeholder="Blood Oxygen" required>`;
+        } else if (selectedVital === 'Blood Glucose Level(mg/dL)') {
+            vitalValueDiv.innerHTML = `<input type="number" name="vitalBloodGlucoseLevel[]" placeholder="Blood Glucose Level" required>`;
+        }
+    }
+    function removeField(button) {
+        const fieldDiv = button.parentElement;
+        fieldDiv.remove();
+    }
+
+    function previewEmail() {
+        window.location.href = '/Nurse/PreviewEmail'
+        // Redirect to index page after clicking OK
+    }
+    
+    document.getElementById('patientForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        const formData = new FormData(this);
+        const data = {};
+        formData.forEach((value, key) => {
+            if (!data[key]) {
+                data[key] = [];
+            }
+            data[key].push(value);
+        });
+        console.log('Form Data Submitted:', data);
+        window.location.href = '/Nurse/ViewAdmittedPatients'
+    });
+    // Dummy vitals data generated in the controller
+    var vitals = @Html.Raw(ViewBag.VitalsData);
+
+    // Extract labels and values for the chart
+    var labels = ["Heart Rate (bpm)", "Respiratory Rate (breaths/min)", "Blood Pressure Systolic", "Blood Pressure Diastolic", "Temperature (°C)", "Blood Oxygen (%)", "Blood Glucose Level(mg/dL)"];
+    var values = [
+        vitals.HeartRate,
+        vitals.ResRate,
+        vitals.BloodPressureSystolic,
+        vitals.BloodPressureDiastolic,
+        vitals.Temperature,
+        vitals.BloodOxygen,
+        vitals.BloodGlucoseLevel
+    ];
+
+    // Get the canvas element
+    var ctx = document.getElementById('vitalsChart').getContext('2d');
+
+    // Create the chart
+    var chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Latest Vitals',
+                data: values,
+                backgroundColor: 'rgba(54, 162, 235, 0.5)', // Customize color as needed
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+</script>
+
